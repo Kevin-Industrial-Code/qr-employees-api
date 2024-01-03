@@ -5,7 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { QrsModule } from './endpoints/qrs/qrs.module';
 import { ClubsModule } from './endpoints/clubs/clubs.module';
 import { SlotsModule } from './endpoints/slots/slots.module';
-import { config }  from 'dotenv';
+import { config } from 'dotenv';
 config();
 
 const { URI_MONGODB } = process.env;
@@ -13,8 +13,8 @@ const { URI_MONGODB } = process.env;
 @Module({
   imports: [
     MongooseModule.forRoot(URI_MONGODB),
-    HangersModule, 
+    HangersModule,
     ReposModule, QrsModule, ClubsModule, SlotsModule
   ],
 })
-export class AppModule {}
+export class AppModule { }

@@ -5,11 +5,12 @@ import { ClubsRepoService } from 'src/repos/clubs-repo/clubs-repo.service';
 export class ClubsService {
 
     constructor(
-        private clubsRepo : ClubsRepoService
-    ) {}
+        private clubsRepo: ClubsRepoService
+    ) { }
 
-    async listClubsByAdminId(adminId : string) {
+    async listClubsByAdminId(adminId: string) {
         try {
+            console.log(adminId)
             let clubs = await this.clubsRepo.listClubsByAdminId(adminId)
             return clubs;
         } catch (error) {
@@ -17,7 +18,7 @@ export class ClubsService {
         }
     }
 
-    async getClub(clubId : string) {
+    async getClub(clubId: string) {
         try {
             let club = await this.clubsRepo.findClub(clubId);
             return club;

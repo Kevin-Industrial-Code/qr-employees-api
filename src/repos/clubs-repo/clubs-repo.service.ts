@@ -5,21 +5,22 @@ import { Club } from 'src/core/entities/club';
 import { ListEntityException } from 'src/core/exceptions/list-entity-exception';
 import { clubData } from 'src/endpoints/clubs/dtos/club-data';
 import { Location } from "../../core/entities/location";
+import { FetchEntityException } from 'src/core/exceptions/fetch-entity-exception';
 
 
 @Injectable()
 export class ClubsRepoService {
 
     constructor(
-        @InjectModel(Club.name) private model : Model<Club>,
-        @InjectModel(Location.name) private locationModel : Model<Location>
-    ) {}
+        @InjectModel(Club.name) private model: Model<Club>,
+        @InjectModel(Location.name) private locationModel: Model<Location>
+    ) { }
 
-    async listClubsByAdminId(adminId : string) {
+    async listClubsByAdminId(adminId: string) {
         try {
             let clubs = await this.model.find({ adminId: new Types.ObjectId(adminId) });
-            let clubsData : Array<clubData> = [];
-            for(let club of clubs) {
+            let clubsData: Array<clubData> = [];
+            for (let club of clubs) {
                 let locations = await this.locationModel.find({ clubId: new Types.ObjectId(club.id), status: true })
                 clubsData.push({ club, locations })
             }
@@ -29,12 +30,13 @@ export class ClubsRepoService {
         }
     }
 
-    async findClub(clubId : string) {
+    async findClub(clubId: string) {
         try {
             let club = await this.model.findById(clubId);
             return club;
         } catch (error) {
-            throw error;
+            console.log(error)
+            throw new FetchEntityException(error);
         }
     }
 }
