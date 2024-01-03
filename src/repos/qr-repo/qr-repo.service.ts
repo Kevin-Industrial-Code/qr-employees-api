@@ -26,6 +26,7 @@ export class QrRepoService {
 
     async findOne(id : string){
         try {
+            console.log(id);
             let qr = await this.model.findById(id);
             return qr;
         } catch (error) {

@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { QrsService } from './qrs.service';
 import { Qr } from 'src/core/entities/qr';
 import { Exception } from 'src/core/shared/exception';
@@ -20,7 +20,7 @@ export class QrsController {
   }
 
   @Get(':id')
-  getQr(qrId : string) {
+  getQr(@Param('id') qrId : string) {
     return new Promise<Qr>((resolve, reject) => {
       this.qrsService.findQr(qrId)
       .then((result) => {
