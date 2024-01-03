@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ClubsService } from './clubs.service';
 import { Club } from 'src/core/entities/club';
 import { Exception } from 'src/core/shared/exception';
@@ -19,5 +19,17 @@ export class ClubsController {
         reject(err.getException());
       });
     });
+  }
+
+  @Get(':id')
+  async getClubData(@Param('id') clubId : string) {
+    return new Promise<Club>((resolve, reject) => {
+      this.clubsService.getClub(clubId)
+      .then((result) => {
+        resolve(result);
+      }).catch((err : Exception) => {
+        reject(err.getException());
+      });
+    })
   }
 }

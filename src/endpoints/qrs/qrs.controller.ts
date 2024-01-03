@@ -18,4 +18,16 @@ export class QrsController {
       });
     })
   }
+
+  @Get(':id')
+  getQr(qrId : string) {
+    return new Promise<Qr>((resolve, reject) => {
+      this.qrsService.findQr(qrId)
+      .then((result) => {
+        resolve(result);
+      }).catch((err : Exception) => {
+        reject(err.getException());
+      });
+    })
+  }
 }

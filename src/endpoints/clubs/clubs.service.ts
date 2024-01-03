@@ -16,4 +16,13 @@ export class ClubsService {
             throw error;
         }
     }
+
+    async getClub(clubId : string) {
+        try {
+            let club = await this.clubsRepo.findClub(clubId);
+            return club;
+        } catch (error) {
+            throw error;
+        }
+    }
 }

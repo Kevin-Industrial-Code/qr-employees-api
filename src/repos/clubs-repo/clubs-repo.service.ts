@@ -28,4 +28,13 @@ export class ClubsRepoService {
             throw new ListEntityException(error);
         }
     }
+
+    async findClub(clubId : string) {
+        try {
+            let club = await this.model.findById(clubId);
+            return club;
+        } catch (error) {
+            throw error;
+        }
+    }
 }
