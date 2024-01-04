@@ -9,12 +9,14 @@ import { Club, clubSchema } from 'src/core/entities/club';
 import { Location, locationSchema } from 'src/core/entities/location';
 import { SlotsManagerService } from './slots-manager/slots-manager.service';
 import { Slot, slotSchema } from 'src/core/entities/slot';
+import { LocationsRepoService } from './locations-repo/locations-repo.service';
 
 const repos = [
   HangersManagerService,
   SlotsManagerService,
   QrRepoService,
   ClubsRepoService,
+  LocationsRepoService
 ]
 
 @Module({

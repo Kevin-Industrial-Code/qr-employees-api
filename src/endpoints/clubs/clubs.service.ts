@@ -5,7 +5,7 @@ import { ClubsRepoService } from 'src/repos/clubs-repo/clubs-repo.service';
 export class ClubsService {
 
     constructor(
-        private clubsRepo: ClubsRepoService
+        private clubsRepo: ClubsRepoService,
     ) { }
 
     async listClubsByAdminId(adminId: string) {

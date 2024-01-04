@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Query } from '@nestjs/common';
 import { QrsService } from './qrs.service';
 import { Qr } from 'src/core/entities/qr';
 import { Exception } from 'src/core/shared/exception';
@@ -23,6 +23,18 @@ export class QrsController {
   getQr(@Param('id') qrId : string) {
     return new Promise<Qr>((resolve, reject) => {
       this.qrsService.findQr(qrId)
+      .then((result) => {
+        resolve(result);
+      }).catch((err : Exception) => {
+        reject(err.getException());
+      });
+    })
+  }
+
+  @Patch(':id')
+  updateQr(@Param('id') qrId: string, @Body() qr : Qr) {
+    return new Promise<any>((resolve, reject) => {
+      this.qrsService.updateQr(qrId, qr)
       .then((result) => {
         resolve(result);
       }).catch((err : Exception) => {

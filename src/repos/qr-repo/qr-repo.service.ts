@@ -7,6 +7,7 @@ import { AssignEntityExceptionService } from 'src/core/exceptions/assign-entity-
 import { DetachEntityException } from 'src/core/exceptions/detach-entity-exception';
 import { FetchEntityException } from 'src/core/exceptions/fetch-entity-exception';
 import { ListEntityException } from 'src/core/exceptions/list-entity-exception';
+import { UpdateEntityException } from 'src/core/exceptions/update-entity-exception';
 
 @Injectable()
 export class QrRepoService {
@@ -63,6 +64,15 @@ export class QrRepoService {
             await this.model.findByIdAndUpdate(qrId, {$unset: {slot: 1}})
         } catch (error) {
             throw new DetachEntityException(error);
+        }
+    }
+
+    async update(qrId: string, qr : Partial<Qr>) {
+        try {
+            let update = await this.model.findByIdAndUpdate(qrId, qr);
+            return update;
+        } catch (error) {
+            throw new UpdateEntityException(error);
         }
     }
 }

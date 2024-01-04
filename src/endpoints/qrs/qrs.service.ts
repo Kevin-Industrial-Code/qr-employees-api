@@ -26,4 +26,13 @@ export class QrsService {
             throw error;
         }
     }
+
+    async updateQr(qrId : string, qr : Qr) {
+        try {
+            let qrData = await this.qrRepo.update(qrId, qr);
+            return qrData;
+        } catch (error) {
+            throw error;
+        }
+    }
 }
