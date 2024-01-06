@@ -12,7 +12,7 @@ export class LocationsController {
     return new Promise<any>((resolve, reject) => {
       this.locationsService.countSlots(locationId)
       .then((result) => { 
-        resolve(result) 
+        resolve(result);
       })
       .catch((err : Exception) => {
         reject(err.getException())
