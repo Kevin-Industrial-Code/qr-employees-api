@@ -8,6 +8,7 @@ import { SlotsModule } from './endpoints/slots/slots.module';
 import { config } from 'dotenv';
 import { LocationsModule } from './endpoints/locations/locations.module';
 import { OrdersModule } from './endpoints/orders/orders.module';
+import { AuthModule } from './endpoints/auth/auth.module';
 config();
 
 const { URI_MONGODB } = process.env;
@@ -16,7 +17,7 @@ const { URI_MONGODB } = process.env;
   imports: [
     MongooseModule.forRoot(URI_MONGODB),
     HangersModule,
-    ReposModule, QrsModule, ClubsModule, SlotsModule, LocationsModule, OrdersModule
+    ReposModule, QrsModule, ClubsModule, SlotsModule, LocationsModule, OrdersModule, AuthModule
   ],
 })
 export class AppModule { }
