@@ -16,7 +16,7 @@ export class LocationsRepoService {
 
     async countSlotsInLocation(locationId : string) {
         try {
-            let count = this.slot.find({ locationId: new Types.ObjectId(locationId) }).countDocuments();
+            let count = this.slot.find({ locationId: new Types.ObjectId(locationId), status: false }).countDocuments();
             return count;
         } catch (error) {
             throw new ListEntityException(error);

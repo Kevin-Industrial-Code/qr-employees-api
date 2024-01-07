@@ -10,7 +10,6 @@ export class ClubsService {
 
     async listClubsByAdminId(adminId: string) {
         try {
-            console.log(adminId)
             let clubs = await this.clubsRepo.listClubsByAdminId(adminId)
             return clubs;
         } catch (error) {

@@ -35,7 +35,6 @@ export class ClubsRepoService {
             let club = await this.model.findById(clubId);
             return club;
         } catch (error) {
-            console.log(error)
             throw new FetchEntityException(error);
         }
     }

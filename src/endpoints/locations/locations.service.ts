@@ -11,8 +11,7 @@ export class LocationsService {
     async countSlots(locationId: string) {
         try {
             let count = await this.locationsRepo.countSlotsInLocation(locationId)
-            console.log(count);
-            return count
+            return { count };
         } catch (error) {
             throw error;
         }
