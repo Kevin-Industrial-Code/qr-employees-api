@@ -1,7 +1,9 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { LocationsService } from './locations.service';
 import { Exception } from 'src/core/shared/exception';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('locations')
 @Controller('locations')
 export class LocationsController {
 

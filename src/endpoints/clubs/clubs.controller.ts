@@ -3,7 +3,9 @@ import { ClubsService } from './clubs.service';
 import { Club } from 'src/core/entities/club';
 import { Exception } from 'src/core/shared/exception';
 import { clubData } from './dtos/club-data';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Clubs')
 @Controller('clubs')
 export class ClubsController {
 

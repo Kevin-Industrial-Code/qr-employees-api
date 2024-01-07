@@ -2,7 +2,9 @@ import { Body, Controller, Get, Param, Patch, Query } from '@nestjs/common';
 import { QrsService } from './qrs.service';
 import { Qr } from 'src/core/entities/qr';
 import { Exception } from 'src/core/shared/exception';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Qrs')
 @Controller('qrs')
 export class QrsController {
   constructor(private readonly qrsService: QrsService) {}

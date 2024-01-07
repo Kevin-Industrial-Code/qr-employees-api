@@ -4,7 +4,9 @@ import { Hanger } from 'src/core/entities/hanger';
 import { Message } from 'src/core/shared/message';
 import { Exception } from 'src/core/shared/exception';
 import { AssignHangerDto } from './dtos/assign-hanger.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Hangers')
 @Controller('hangers')
 export class HangersController {
   constructor(private readonly hangersService: HangersService) {}

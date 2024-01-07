@@ -4,7 +4,9 @@ import { Slot } from 'src/core/entities/slot';
 import { Exception } from 'src/core/shared/exception';
 import { Message } from 'src/core/shared/message';
 import { AssignSlotDto } from './dtos/assign-slot.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Slots')
 @Controller('slots')
 export class SlotsController {
   constructor(private readonly slotsService: SlotsService) {}
