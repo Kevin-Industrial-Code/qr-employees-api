@@ -23,6 +23,8 @@ export class Qr {
     paymentStatus: boolean;
     @Prop({ type: mongoose.Types.Map })
     hanger: Partial<Hanger>;
+    @Prop({ type: mongoose.Types.Array })
+    services : Array<any>
     @Prop({ type: mongoose.Types.Map })
     slot: Slot
     

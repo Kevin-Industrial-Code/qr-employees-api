@@ -4,6 +4,7 @@ import { Model, Types } from 'mongoose';
 import { Hanger } from 'src/core/entities/hanger';
 import { Qr } from 'src/core/entities/qr';
 import { AssignEntityExceptionService } from 'src/core/exceptions/assign-entity-exception';
+import { CreateEntityException } from 'src/core/exceptions/create-entity-exception';
 import { DetachEntityException } from 'src/core/exceptions/detach-entity-exception';
 import { FetchEntityException } from 'src/core/exceptions/fetch-entity-exception';
 import { ListEntityException } from 'src/core/exceptions/list-entity-exception';
@@ -72,6 +73,14 @@ export class QrRepoService {
             return update;
         } catch (error) {
             throw new UpdateEntityException(error);
+        }
+    }
+
+    async createQr(qr : Qr) {
+        try {
+            return await this.model.create(qr)
+        } catch (error) {
+            throw new CreateEntityException(error);
         }
     }
 }
