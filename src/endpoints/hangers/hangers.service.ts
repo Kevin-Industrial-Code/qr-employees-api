@@ -3,9 +3,11 @@ import { Hanger } from 'src/core/entities/hanger';
 import { Qr } from 'src/core/entities/qr';
 import { HangersManagerService } from 'src/repos/hangers-manager/hangers-manager.service';
 import { QrRepoService } from 'src/repos/qr-repo/qr-repo.service';
+import { AssignHangerDto } from './dtos/assign-hanger.dto';
 
 @Injectable()
 export class HangersService {
+  
   
   constructor(
     private hangersRepo : HangersManagerService,
@@ -49,6 +51,12 @@ export class HangersService {
     }
   }
 
-
+  async takeBreak(qrData: AssignHangerDto) {
+    try {
+      return null;
+    } catch (error) {
+      throw error;
+    }
+  }
 
 }

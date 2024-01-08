@@ -48,4 +48,16 @@ export class HangersController {
       });
     });
   }
+
+  @Post('break')
+  takeBreak(@Body() qrData : AssignHangerDto ) {
+    return new Promise<Message>((resolve, reject) => {
+      this.hangersService.takeBreak(qrData)
+      .then((result) => {
+        resolve(result);
+      }).catch((err : Exception) => {
+        reject(err.getException());
+      });
+    })
+  }
 }
