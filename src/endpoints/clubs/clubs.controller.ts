@@ -1,10 +1,12 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { ClubsService } from './clubs.service';
 import { Club } from 'src/core/entities/club';
 import { Exception } from 'src/core/shared/exception';
 import { clubData } from './dtos/club-data';
 import { ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from 'src/core/guards/auth/auth.guard';
 
+@UseGuards(AuthGuard)
 @ApiTags('Clubs')
 @Controller('clubs')
 export class ClubsController {

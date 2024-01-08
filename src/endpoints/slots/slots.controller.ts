@@ -1,11 +1,13 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { SlotsService } from './slots.service';
 import { Slot } from 'src/core/entities/slot';
 import { Exception } from 'src/core/shared/exception';
 import { Message } from 'src/core/shared/message';
 import { AssignSlotDto } from './dtos/assign-slot.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from 'src/core/guards/auth/auth.guard';
 
+@UseGuards(AuthGuard)
 @ApiTags('Slots')
 @Controller('slots')
 export class SlotsController {

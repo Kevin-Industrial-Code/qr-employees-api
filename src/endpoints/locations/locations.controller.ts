@@ -1,8 +1,10 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { LocationsService } from './locations.service';
 import { Exception } from 'src/core/shared/exception';
 import { ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from 'src/core/guards/auth/auth.guard';
 
+@UseGuards(AuthGuard)
 @ApiTags('locations')
 @Controller('locations')
 export class LocationsController {

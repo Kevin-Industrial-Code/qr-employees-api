@@ -1,9 +1,11 @@
-import { Body, Controller, Get, Param, Patch, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Query, UseGuards } from '@nestjs/common';
 import { QrsService } from './qrs.service';
 import { Qr } from 'src/core/entities/qr';
 import { Exception } from 'src/core/shared/exception';
 import { ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from 'src/core/guards/auth/auth.guard';
 
+@UseGuards(AuthGuard)
 @ApiTags('Qrs')
 @Controller('qrs')
 export class QrsController {
