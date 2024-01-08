@@ -17,8 +17,9 @@ export class AuthGuard implements CanActivate {
     
     if(!request.headers.authorization)
       return false;
+    let [bearer, token] = request.headers.authorization.split(" ");
     try {
-      let val = this.jwt.verify(request.headers.authorization)
+      let val = this.jwt.verify(token)
       if(val)
         return true;
     } catch (error) {
