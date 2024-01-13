@@ -17,7 +17,13 @@ const { URI_MONGODB } = process.env;
   imports: [
     MongooseModule.forRoot(URI_MONGODB),
     HangersModule,
-    ReposModule, QrsModule, ClubsModule, SlotsModule, LocationsModule, OrdersModule, AuthModule
+    ReposModule, 
+    QrsModule, 
+    ClubsModule, 
+    SlotsModule, 
+    LocationsModule, 
+    OrdersModule, 
+    AuthModule
   ],
 })
 export class AppModule { }
