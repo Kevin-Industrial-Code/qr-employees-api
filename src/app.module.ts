@@ -8,6 +8,7 @@ import { SlotsModule } from './endpoints/slots/slots.module';
 import { config } from 'dotenv';
 import { LocationsModule } from './endpoints/locations/locations.module';
 import { OrdersModule } from './endpoints/orders/orders.module';
+import { ScheduleModule } from "@nestjs/schedule";
 import { AuthModule } from './endpoints/auth/auth.module';
 config();
 
@@ -16,14 +17,15 @@ const { URI_MONGODB } = process.env;
 @Module({
   imports: [
     MongooseModule.forRoot(URI_MONGODB),
+    ScheduleModule.forRoot(),
     HangersModule,
-    ReposModule, 
-    QrsModule, 
-    ClubsModule, 
-    SlotsModule, 
-    LocationsModule, 
-    OrdersModule, 
-    AuthModule
+    ReposModule,
+    QrsModule,
+    ClubsModule,
+    SlotsModule,
+    LocationsModule,
+    OrdersModule,
+    AuthModule,
   ],
 })
 export class AppModule { }

@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Cron } from '@nestjs/schedule';
 import { Qr } from 'src/core/entities/qr';
 import { QrRepoService } from 'src/repos/qr-repo/qr-repo.service';
 
@@ -6,10 +7,10 @@ import { QrRepoService } from 'src/repos/qr-repo/qr-repo.service';
 export class QrsService {
 
     constructor(
-        private qrRepo : QrRepoService
-    ) {}
+        private qrRepo: QrRepoService
+    ) { }
 
-    async listQrs(clubId : string) {
+    async listQrs(clubId: string) {
         try {
             let qrs = await this.qrRepo.listQrsByClubId(clubId);
             return qrs;
@@ -18,7 +19,7 @@ export class QrsService {
         }
     }
 
-    async findQr(qrId : string) : Promise<Qr> {
+    async findQr(qrId: string): Promise<Qr> {
         try {
             let qr = await this.qrRepo.findOne(qrId);
             return qr;
@@ -27,10 +28,23 @@ export class QrsService {
         }
     }
 
-    async updateQr(qrId : string, qr : Qr) {
+    async updateQr(qrId: string, qr: Qr) {
         try {
             let qrData = await this.qrRepo.update(qrId, qr);
             return qrData;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    @Cron("0 0 5 * * *")
+    async disableQr() {
+
+    }
+
+    async takeBreakTime() {
+        try {
+
         } catch (error) {
             throw error;
         }
