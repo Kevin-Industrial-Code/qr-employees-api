@@ -6,6 +6,7 @@ import { Qr } from 'src/core/entities/qr';
 import { AssignEntityExceptionService } from 'src/core/exceptions/assign-entity-exception';
 import { CreateEntityException } from 'src/core/exceptions/create-entity-exception';
 import { DetachEntityException } from 'src/core/exceptions/detach-entity-exception';
+import { DisablingOldQrException } from 'src/core/exceptions/disabling-old-qr-exception';
 import { FetchEntityException } from 'src/core/exceptions/fetch-entity-exception';
 import { ListEntityException } from 'src/core/exceptions/list-entity-exception';
 import { UpdateEntityException } from 'src/core/exceptions/update-entity-exception';
@@ -14,19 +15,19 @@ import { UpdateEntityException } from 'src/core/exceptions/update-entity-excepti
 export class QrRepoService {
 
     constructor(
-        @InjectModel(Qr.name) private model : Model<Qr>
-    ) {}
+        @InjectModel(Qr.name) private model: Model<Qr>
+    ) { }
 
-    async listQrsByClubId(clubId : string) {
+    async listQrsByClubId(clubId: string) {
         try {
-            let qrs =  await this.model.find({ clubId: new Types.ObjectId(clubId) });
+            let qrs = await this.model.find({ clubId: new Types.ObjectId(clubId) });
             return qrs;
         } catch (error) {
             throw new ListEntityException(error);
         }
     }
 
-    async findOne(id : string){
+    async findOne(id: string) {
         try {
             let qr = await this.model.findById(id);
             return qr;
@@ -35,7 +36,7 @@ export class QrRepoService {
         }
     }
 
-    async assignHanger(qrId : string, qr : Qr) {
+    async assignHanger(qrId: string, qr: Qr) {
         try {
             await this.model.findByIdAndUpdate(qrId, qr);
         } catch (error) {
@@ -43,15 +44,15 @@ export class QrRepoService {
         }
     }
 
-    async detachHanger(qrId : string) {
+    async detachHanger(qrId: string) {
         try {
-            await this.model.findByIdAndUpdate(qrId, {$unset: {hanger: 1}})
+            await this.model.findByIdAndUpdate(qrId, { $unset: { hanger: 1 } })
         } catch (error) {
             throw new DetachEntityException(error);
         }
     }
 
-    async assignSlot(qrId : string, qr : Qr) {
+    async assignSlot(qrId: string, qr: Qr) {
         try {
             await this.model.findByIdAndUpdate(qrId, qr);
         } catch (error) {
@@ -59,15 +60,15 @@ export class QrRepoService {
         }
     }
 
-    async detachSlot(qrId : string) {
+    async detachSlot(qrId: string) {
         try {
-            await this.model.findByIdAndUpdate(qrId, {$unset: {slot: 1}})
+            await this.model.findByIdAndUpdate(qrId, { $unset: { slot: 1 } })
         } catch (error) {
             throw new DetachEntityException(error);
         }
     }
 
-    async update(qrId: string, qr : Partial<Qr>) {
+    async update(qrId: string, qr: Partial<Qr>) {
         try {
             let update = await this.model.findByIdAndUpdate(qrId, qr);
             return update;
@@ -76,11 +77,20 @@ export class QrRepoService {
         }
     }
 
-    async createQr(qr : Qr) {
+    async createQr(qr: Qr) {
         try {
             return await this.model.create(qr)
         } catch (error) {
             throw new CreateEntityException(error);
+        }
+    }
+
+    async disableOldQrs() {
+        try {
+            await this.model.updateMany({}, { $set: { active: false } });
+            return "ok";
+        } catch (error) {
+            throw new DisablingOldQrException(error);
         }
     }
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, LoggerService } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { Qr } from 'src/core/entities/qr';
 import { QrRepoService } from 'src/repos/qr-repo/qr-repo.service';
@@ -7,7 +7,8 @@ import { QrRepoService } from 'src/repos/qr-repo/qr-repo.service';
 export class QrsService {
 
     constructor(
-        private qrRepo: QrRepoService
+        private qrRepo: QrRepoService,
+        private logger: LoggerService
     ) { }
 
     async listQrs(clubId: string) {
@@ -39,7 +40,11 @@ export class QrsService {
 
     @Cron("0 0 5 * * *")
     async disableQr() {
-
+        try {
+            await this.qrRepo.disableOldQrs()
+        } catch (error) {
+            this.logger.warn(error);
+        }
     }
 
     async takeBreakTime() {
