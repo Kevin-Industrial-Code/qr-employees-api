@@ -139,8 +139,7 @@ export class QrsService {
 
     listBreaks(): any {
         let crons = this.registry.getCronJobs()
-        console.log(crons);
-        return null;
+        return crons;
     }
 }
 
