@@ -20,7 +20,7 @@ export class QrRepoService {
 
     async listQrsByClubId(clubId: string) {
         try {
-            let qrs = await this.model.find({ clubId: new Types.ObjectId(clubId), used: true });
+            let qrs = await this.model.find({ clubId: new Types.ObjectId(clubId), used: true, active: true });
             return qrs;
         } catch (error) {
             throw new ListEntityException(error);
