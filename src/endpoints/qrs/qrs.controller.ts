@@ -71,6 +71,7 @@ export class QrsController {
       .then((result : Message) => {
         resolve(result);
       }).catch((err : Exception) => {
+        console.log(err);
         reject(err.getException());
       });
     })
