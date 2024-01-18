@@ -5,7 +5,10 @@ import { Hanger } from "./hanger";
 
 export type QrDocument = HydratedDocument<Qr>;
 
-
+export type BreakTime = {
+    start: Date,
+    finish: Date
+}
 
 @Schema()
 export class Qr {
@@ -27,6 +30,11 @@ export class Qr {
     services : Array<any>
     @Prop({ type: mongoose.Types.Map })
     slot: Slot
-    
+    @Prop({ type: Boolean })
+    active : boolean;
+    @Prop({ type: Boolean })
+    used : boolean;
+    @Prop({ type: mongoose.Types.Array })
+    breaks: Array<BreakTime>
 }
 export const QrSchema = SchemaFactory.createForClass(Qr);

@@ -6,11 +6,18 @@ import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/core/guards/auth/auth.guard';
 import { Message } from 'src/core/shared/message';
 
-@UseGuards(AuthGuard)
+// @UseGuards(AuthGuard)
 @ApiTags('Qrs')
 @Controller('qrs')
 export class QrsController {
   constructor(private readonly qrsService: QrsService) { }
+
+  @Get('jobs')
+  listJobs(){
+    return new Promise<any>((resolve, reject) => {
+      resolve(this.qrsService.listBreaks())
+    })
+  }
 
   @Get()
   listQrs(@Query('clubId') clubId: string) {
@@ -22,6 +29,14 @@ export class QrsController {
           reject(err.getException());
         });
     })
+  }
+
+  @Get('breaks')
+  listAllActiveBreaks() {
+    return new Promise<Message>((resolve, reject) => {
+      this.qrsService.listBreaks()
+      resolve(null)
+    });
   }
 
   @Get(':id')
@@ -43,15 +58,35 @@ export class QrsController {
         .then((result) => {
           resolve(result);
         }).catch((err: Exception) => {
+          console.log(err);
           reject(err.getException());
         });
     })
   }
 
   @Patch("break/:id")
-  takeBreak() {
+  takeBreak(@Param('id') qrId : string) {
     return new Promise<Message>((resolve, reject) => {
-      // this.qrsService.
+      this.qrsService.takeBreakTime(qrId)
+      .then((result : Message) => {
+        resolve(result);
+      }).catch((err : Exception) => {
+        reject(err.getException());
+      });
     })
   }
+
+  @Patch("break/stop/:id")
+  stopBreak(@Param('id') qrId : string) {
+    return new Promise<Message>((resolve, reject) => {
+      this.qrsService.stopBreakTime(qrId)
+      .then((result : Message) => {
+        resolve(result);
+      }).catch((err : Exception) => {
+        reject(err.getException());
+      });
+    })
+  }
+
+  
 }

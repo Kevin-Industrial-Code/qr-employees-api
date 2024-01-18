@@ -20,7 +20,7 @@ export class QrRepoService {
 
     async listQrsByClubId(clubId: string) {
         try {
-            let qrs = await this.model.find({ clubId: new Types.ObjectId(clubId) });
+            let qrs = await this.model.find({ clubId: new Types.ObjectId(clubId), used: true });
             return qrs;
         } catch (error) {
             throw new ListEntityException(error);
@@ -87,7 +87,7 @@ export class QrRepoService {
 
     async disableOldQrs() {
         try {
-            await this.model.updateMany({}, { $set: { active: false } });
+            await this.model.updateMany({}, { $set: { active: false, used: true } });
             return "ok";
         } catch (error) {
             throw new DisablingOldQrException(error);
