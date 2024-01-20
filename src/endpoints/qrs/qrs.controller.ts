@@ -87,7 +87,5 @@ export class QrsController {
         reject(err.getException());
       });
     })
-  }
-
-  
+  }  
 }
