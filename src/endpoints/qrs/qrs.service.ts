@@ -38,6 +38,9 @@ export class QrsService {
     async findQr(qrId: string): Promise<Qr> {
         try {
             let qr = await this.qrRepo.findOne(qrId);
+            qr.active = !qr.used? true : qr.active;
+            qr.used = qr.used || true;
+            await this.qrRepo.update(qrId, qr);
             return qr;
         } catch (error) {
             throw error;
@@ -57,9 +60,8 @@ export class QrsService {
     // @Cron("0 * * * * *")
     async disableQr() {
         try {
-            // await this.qrRepo.disableOldQrs()
+            await this.qrRepo.disableOldQrs()
         } catch (error) {
-            // this.logger.warn(error);
             console.log(error);
         }
     }

@@ -22,19 +22,21 @@ export class Qr {
     email: string;
     @Prop()
     photo: string;
-    @Prop({ type: mongoose.Types.Map })
+    @Prop({ type: Boolean })
     paymentStatus: boolean;
     @Prop({ type: mongoose.Types.Map })
     hanger: Partial<Hanger>;
     @Prop({ type: mongoose.Types.Array })
-    services: Array<any>
+    services: Array<any>;
     @Prop({ type: mongoose.Types.Map })
-    slot: Slot
+    slot: Slot;
     @Prop({ type: Boolean })
     active : boolean;
     @Prop({ type: Boolean })
     used : boolean;
     @Prop({ type: mongoose.Types.Array })
-    breaks: Array<BreakTime>
+    breaks: Array<BreakTime>;
+    @Prop({ type: String})
+    paymentType : string;
 }
 export const QrSchema = SchemaFactory.createForClass(Qr);
