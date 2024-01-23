@@ -71,7 +71,6 @@ export class QrsService {
             let qr = await this.qrRepo.findOne(id);
             if (!qr)
                 throw new QRNotFoundException(new Error('Qr not found'));
-            console.log(qr);
             let club = await this.clubsRepo.findClub(qr.clubId);
             if (!club)
                 throw new FetchEntityException(new Error('there was a problem finding your club'));

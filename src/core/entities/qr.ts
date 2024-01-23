@@ -34,6 +34,8 @@ export class Qr {
     active : boolean;
     @Prop({ type: Boolean })
     used : boolean;
+    @Prop({ type: Boolean })
+    entry : boolean;
     @Prop({ type: mongoose.Types.Array })
     breaks: Array<BreakTime>;
     @Prop({ type: String})
