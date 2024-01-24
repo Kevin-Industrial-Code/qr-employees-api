@@ -51,12 +51,5 @@ export class HangersService {
     }
   }
 
-  async takeBreak(qrData: AssignHangerDto) {
-    try {
-      return null;
-    } catch (error) {
-      throw error;
-    }
-  }
 
 }
