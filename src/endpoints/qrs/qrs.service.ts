@@ -35,10 +35,19 @@ export class QrsService {
         }
     }
 
+    async listBreaks(): Promise<Map<string, any>> {
+        try {
+            let crons = this.registry.getCronJobs();
+            return crons;
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async findQr(qrId: string): Promise<Qr> {
         try {
             let qr = await this.qrRepo.findOne(qrId);
-            qr.active = !qr.used? true : qr.active;
+            qr.active = !qr.used ? true : qr.active;
             qr.used = qr.used || true;
             await this.qrRepo.update(qrId, qr);
             return qr;
@@ -62,25 +71,22 @@ export class QrsService {
         try {
             await this.qrRepo.disableOldQrs()
         } catch (error) {
-            console.log(error);
+            // TODO: add logic to handle exceptions from disabling old qrs
         }
     }
 
     async takeBreakTime(id: string) {
         try {
             let qr = await this.qrRepo.findOne(id);
-            if (!qr)
-                throw new QRNotFoundException(new Error('Qr not found'));
             let club = await this.clubsRepo.findClub(qr.clubId);
-            if (!club)
-                throw new FetchEntityException(new Error('there was a problem finding your club'));
+            if (!qr) throw new QRNotFoundException(new Error('Qr not found'));
+            if (!club) throw new FetchEntityException(new Error('there was a problem finding your club'));
+
             let usedTime = 0;
             if (qr.breaks) {
-                if (qr.breaks.length > club.breakNumber)
-                    throw new MaximumBreaktimesExceededException(new Error('Qr reached maximum allowed break times'));
+                if (qr.breaks.length > club.breakNumber) throw new MaximumBreaktimesExceededException(new Error('Qr reached maximum allowed break times'));
                 for (let breakTime of qr.breaks) {
-                    if (!breakTime.finish)
-                        throw new BreaktimeAlreadyRunningException(new Error('the breaktime has already been initialized and hasnt been stopped'));
+                    if (!breakTime.finish) throw new BreaktimeAlreadyRunningException(new Error('the breaktime has already been initialized and hasnt been stopped'));
                     let startTime = breakTime.start.getTime();
                     let finishTime = breakTime.finish.getTime();
                     usedTime += finishTime - startTime;
@@ -97,7 +103,7 @@ export class QrsService {
             })
             this.registry.addCronJob(id, job as any);
             job.start()
-            let breaktime : BreakTime = {
+            let breaktime: BreakTime = {
                 start: new Date(),
                 finish: undefined
             }
@@ -124,7 +130,11 @@ export class QrsService {
     async stopBreakTime(qrId: string) {
         try {
             let qr = await this.qrRepo.findOne(qrId);
-            this.registry.deleteCronJob(qrId);
+            try {
+                this.registry.deleteCronJob(qrId);
+            } catch (error) {
+                throw new FetchEntityException(new Error("The cron job was not found"))
+            }
             let finish = new Date();
             let lastBreak = qr.breaks.pop();
             lastBreak.finish = finish;
@@ -137,11 +147,6 @@ export class QrsService {
         } catch (error) {
             throw error;
         }
-    }
-
-    listBreaks(): any {
-        let crons = this.registry.getCronJobs()
-        return crons;
     }
 }
 

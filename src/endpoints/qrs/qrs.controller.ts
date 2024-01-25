@@ -12,13 +12,6 @@ import { Message } from 'src/core/shared/message';
 export class QrsController {
   constructor(private readonly qrsService: QrsService) { }
 
-  @Get('jobs')
-  listJobs(){
-    return new Promise<any>((resolve, reject) => {
-      resolve(this.qrsService.listBreaks())
-    })
-  }
-
   @Get()
   listQrs(@Query('clubId') clubId: string) {
     return new Promise<Array<Qr>>((resolve, reject) => {
@@ -33,9 +26,13 @@ export class QrsController {
 
   @Get('breaks')
   listAllActiveBreaks() {
-    return new Promise<Message>((resolve, reject) => {
+    return new Promise<Map<string, any>>((resolve, reject) => {
       this.qrsService.listBreaks()
-      resolve(null)
+      .then((result) => {
+        resolve(result)
+      }).catch((err : Exception) => {
+        reject(err.getException());
+      });
     });
   }
 
@@ -58,34 +55,32 @@ export class QrsController {
         .then((result) => {
           resolve(result);
         }).catch((err: Exception) => {
-          console.log(err);
           reject(err.getException());
         });
     })
   }
 
   @Patch("break/:id")
-  takeBreak(@Param('id') qrId : string) {
+  takeBreak(@Param('id') qrId: string) {
     return new Promise<Message>((resolve, reject) => {
       this.qrsService.takeBreakTime(qrId)
-      .then((result : Message) => {
-        resolve(result);
-      }).catch((err : Exception) => {
-        console.log(err);
-        reject(err.getException());
-      });
+        .then((result: Message) => {
+          resolve(result);
+        }).catch((err: Exception) => {
+          reject(err.getException());
+        });
     })
   }
 
   @Patch("break/stop/:id")
-  stopBreak(@Param('id') qrId : string) {
+  stopBreak(@Param('id') qrId: string) {
     return new Promise<Message>((resolve, reject) => {
       this.qrsService.stopBreakTime(qrId)
-      .then((result : Message) => {
-        resolve(result);
-      }).catch((err : Exception) => {
-        reject(err.getException());
-      });
+        .then((result: Message) => {
+          resolve(result);
+        }).catch((err: Exception) => {
+          reject(err.getException());
+        });
     })
-  }  
+  }
 }

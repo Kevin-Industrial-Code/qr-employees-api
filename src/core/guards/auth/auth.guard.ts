@@ -7,23 +7,22 @@ import { Observable } from 'rxjs';
 export class AuthGuard implements CanActivate {
 
   constructor(
-    private jwt : JwtService
-  ) {}
+    private jwt: JwtService
+  ) { }
 
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    const request : Request = context.switchToHttp().getRequest();
-    
-    if(!request.headers.authorization)
+    const request: Request = context.switchToHttp().getRequest();
+
+    if (!request.headers.authorization)
       return false;
     let [bearer, token] = request.headers.authorization.split(" ");
     try {
       let val = this.jwt.verify(token)
-      if(val)
+      if (val)
         return true;
     } catch (error) {
-      console.log(error);
       return false;
     }
   }
