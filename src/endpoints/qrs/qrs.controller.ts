@@ -13,7 +13,7 @@ export class QrsController {
   constructor(private readonly qrsService: QrsService) { }
 
   @Get('jobs')
-  listJobs(){
+  listJobs() {
     return new Promise<any>((resolve, reject) => {
       resolve(this.qrsService.listBreaks())
     })
@@ -58,34 +58,32 @@ export class QrsController {
         .then((result) => {
           resolve(result);
         }).catch((err: Exception) => {
-          console.log(err);
           reject(err.getException());
         });
     })
   }
 
   @Patch("break/:id")
-  takeBreak(@Param('id') qrId : string) {
+  takeBreak(@Param('id') qrId: string) {
     return new Promise<Message>((resolve, reject) => {
       this.qrsService.takeBreakTime(qrId)
-      .then((result : Message) => {
-        resolve(result);
-      }).catch((err : Exception) => {
-        console.log(err);
-        reject(err.getException());
-      });
+        .then((result: Message) => {
+          resolve(result);
+        }).catch((err: Exception) => {
+          reject(err.getException());
+        });
     })
   }
 
   @Patch("break/stop/:id")
-  stopBreak(@Param('id') qrId : string) {
+  stopBreak(@Param('id') qrId: string) {
     return new Promise<Message>((resolve, reject) => {
       this.qrsService.stopBreakTime(qrId)
-      .then((result : Message) => {
-        resolve(result);
-      }).catch((err : Exception) => {
-        reject(err.getException());
-      });
+        .then((result: Message) => {
+          resolve(result);
+        }).catch((err: Exception) => {
+          reject(err.getException());
+        });
     })
-  }  
+  }
 }

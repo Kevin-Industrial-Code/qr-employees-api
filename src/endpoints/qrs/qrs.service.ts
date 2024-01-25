@@ -38,7 +38,7 @@ export class QrsService {
     async findQr(qrId: string): Promise<Qr> {
         try {
             let qr = await this.qrRepo.findOne(qrId);
-            qr.active = !qr.used? true : qr.active;
+            qr.active = !qr.used ? true : qr.active;
             qr.used = qr.used || true;
             await this.qrRepo.update(qrId, qr);
             return qr;
@@ -62,7 +62,7 @@ export class QrsService {
         try {
             await this.qrRepo.disableOldQrs()
         } catch (error) {
-            console.log(error);
+            // TODO: add logic to handle exceptions from disabling old qrs
         }
     }
 
@@ -97,7 +97,7 @@ export class QrsService {
             })
             this.registry.addCronJob(id, job as any);
             job.start()
-            let breaktime : BreakTime = {
+            let breaktime: BreakTime = {
                 start: new Date(),
                 finish: undefined
             }
@@ -124,7 +124,11 @@ export class QrsService {
     async stopBreakTime(qrId: string) {
         try {
             let qr = await this.qrRepo.findOne(qrId);
-            this.registry.deleteCronJob(qrId);
+            try {
+                this.registry.deleteCronJob(qrId);
+            } catch (error) {
+                throw new FetchEntityException(new Error("The cron job was not found"))
+            }
             let finish = new Date();
             let lastBreak = qr.breaks.pop();
             lastBreak.finish = finish;
