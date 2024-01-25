@@ -83,7 +83,6 @@ export class QrRepoService {
         try {
             qr.orderId = new Types.ObjectId(qr.orderId) as any;
             qr.clubId = new Types.ObjectId(qr.clubId) as any;
-            console.log(qr);
             return await this.model.create(qr)
         } catch (error) {
             throw new CreateEntityException(error);
