@@ -36,8 +36,12 @@ export class QrsService {
     }
 
     async listBreaks(): Promise<Map<string, any>> {
-        let crons = this.registry.getCronJobs()
-        return crons;
+        try {
+            let crons = this.registry.getCronJobs();
+            return crons;
+        } catch (error) {
+            throw error;
+        }
     }
 
     async findQr(qrId: string): Promise<Qr> {
