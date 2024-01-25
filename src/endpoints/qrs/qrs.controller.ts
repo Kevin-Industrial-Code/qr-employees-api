@@ -12,13 +12,6 @@ import { Message } from 'src/core/shared/message';
 export class QrsController {
   constructor(private readonly qrsService: QrsService) { }
 
-  @Get('jobs')
-  listJobs() {
-    return new Promise<any>((resolve, reject) => {
-      resolve(this.qrsService.listBreaks())
-    })
-  }
-
   @Get()
   listQrs(@Query('clubId') clubId: string) {
     return new Promise<Array<Qr>>((resolve, reject) => {
