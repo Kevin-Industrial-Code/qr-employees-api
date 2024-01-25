@@ -70,6 +70,8 @@ export class QrRepoService {
 
     async update(qrId: string, qr: Partial<Qr>) {
         try {
+            if(qr.clubId) delete qr.clubId;
+            if(qr.orderId) delete qr.orderId;
             let update = await this.model.findByIdAndUpdate(qrId, qr);
             return update;
         } catch (error) {
