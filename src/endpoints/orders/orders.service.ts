@@ -14,6 +14,7 @@ export class OrdersService {
 
   async create( { order, qr } : CreateOrderDto) {
     try {
+      console.log(qr);
       let orderRef = await this.ordersRepo.postEmployeeGeneratedOrder(order);
       qr.orderId = orderRef.id;
       let qrRef = await this.qrsRepo.createQr(qr);
