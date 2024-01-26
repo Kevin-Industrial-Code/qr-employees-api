@@ -134,6 +134,7 @@ export class QrsService {
             let lastBreak = qr.breaks.pop();
             lastBreak.finish = finish;
             qr.breaks.push(lastBreak);
+            qr.activeBreak = false;
             this.qrRepo.update(qrId, qr);
             return {
                 name: 'success',
@@ -149,10 +150,3 @@ export class QrsService {
         return crons;
     }
 }
-
-
-/**
- * 
- * 
-            
- */
