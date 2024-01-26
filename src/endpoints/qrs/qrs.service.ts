@@ -9,6 +9,9 @@ import { QRNotFoundException } from 'src/core/exceptions/qr-not-found-exception'
 import { BreakTime } from "../../core/entities/qr";
 import { MaximumBreaktimesExceededException } from 'src/core/exceptions/maximum-breaktimes-exceeded-exception';
 import { BreaktimeAlreadyRunningException } from 'src/core/exceptions/breaktime-already-running-exception';
+import { HangersService } from '../hangers/hangers.service';
+import { Types } from 'mongoose';
+
 
 type Time = {
     seconds: number;
@@ -23,7 +26,8 @@ export class QrsService {
         private qrRepo: QrRepoService,
         private clubsRepo: ClubsRepoService,
         // private logger: LoggerService,
-        private registry: SchedulerRegistry
+        private registry: SchedulerRegistry,
+        private hangersService: HangersService
     ) { }
 
     async listQrs(clubId: string) {
@@ -66,9 +70,9 @@ export class QrsService {
         }
     }
 
-    async takeBreakTime(id: string) {
+    async takeBreakTime(qrId: string) {
         try {
-            let qr = await this.qrRepo.findOne(id);
+            let qr = await this.qrRepo.findOne(qrId);
             if (!qr)
                 throw new QRNotFoundException(new Error('Qr not found'));
             let club = await this.clubsRepo.findClub(qr.clubId);
@@ -92,10 +96,10 @@ export class QrsService {
             cronTime = `${seconds} ${minutes} ${hours} * * *`;
             let job = new CronJob(cronTime, async () => {
                 qr.active = false;
-                this.qrRepo.update(id, qr);
-                this.registry.deleteCronJob(id);
+                this.qrRepo.update(qrId, qr);
+                this.registry.deleteCronJob(qrId);
             })
-            this.registry.addCronJob(id, job as any);
+            this.registry.addCronJob(qrId, job as any);
             job.start()
             let breaktime: BreakTime = {
                 start: new Date(),
@@ -104,12 +108,16 @@ export class QrsService {
             if (!qr.breaks) qr.breaks = [breaktime];
             else qr.breaks = [...qr.breaks, breaktime];
             qr.activeBreak = true;
-            await this.qrRepo.update(id, qr);
+            let hangerId = await qr.hanger["_id"] as Types.ObjectId;
+            console.log(hangerId.toString())
+            await this.qrRepo.update(qrId, qr);
+            await this.hangersService.detach(hangerId.toString(), qrId);
             return {
                 name: 'success',
                 message: 'Break Time initialized successfully'
             }
         } catch (error) {
+            console.log(error)
             throw error;
         }
     }
@@ -135,12 +143,15 @@ export class QrsService {
             lastBreak.finish = finish;
             qr.breaks.push(lastBreak);
             qr.activeBreak = false;
-            this.qrRepo.update(qrId, qr);
+
+
+            await this.qrRepo.update(qrId, qr);
             return {
                 name: 'success',
                 message: 'Break Time stopped successfully'
             }
         } catch (error) {
+            console.log(error)
             throw error;
         }
     }

@@ -7,5 +7,6 @@ import { ReposModule } from 'src/repos/repos.module';
   imports: [ReposModule],
   controllers: [HangersController],
   providers: [HangersService],
+  exports: [HangersService]
 })
-export class HangersModule {}
+export class HangersModule { }
