@@ -2,7 +2,7 @@ import { Injectable, LoggerService } from '@nestjs/common';
 import { Cron, SchedulerRegistry } from '@nestjs/schedule';
 import { Qr } from 'src/core/entities/qr';
 import { QrRepoService } from 'src/repos/qr-repo/qr-repo.service';
-import { CronJob, CronTime } from 'cron';
+import { CronJob } from 'cron';
 import { FetchEntityException } from 'src/core/exceptions/fetch-entity-exception';
 import { ClubsRepoService } from 'src/repos/clubs-repo/clubs-repo.service';
 import { QRNotFoundException } from 'src/core/exceptions/qr-not-found-exception';
@@ -103,6 +103,7 @@ export class QrsService {
             }
             if (!qr.breaks) qr.breaks = [breaktime];
             else qr.breaks = [...qr.breaks, breaktime];
+            qr.activeBreak = true;
             await this.qrRepo.update(id, qr);
             return {
                 name: 'success',
