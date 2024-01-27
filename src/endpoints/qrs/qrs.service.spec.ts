@@ -49,10 +49,13 @@ describe('QrsService', () => {
     photo: '',
     paymentStatus: false,
     hanger: {
+      _id: {
+        toString: jest.fn(() => "test")
+      },
       locationId: null,
       name: "",
       status: null
-    },
+    } as any,
     services: [],
     slot: null,
     active: false,
@@ -147,13 +150,27 @@ describe('QrsService', () => {
       await expect(service.takeBreakTime("test")).rejects.toBeInstanceOf(MaximumBreaktimesExceededException);
     });
 
-    // it("should reject the break as the qr could not be detached from the hanger", () => {
-    //   expect(service.takeBreakTime("test")).rejects.toBeInstanceOf(DetachEntityException);
-    // });
+    it("should reject the break as the qr could not be detached from the hanger", async () => {
+      let newQr: Partial<Qr> = { ...qr };
+      newQr.activeBreak = false;
+      newQr.breaks = [];
+      mockRepo.findOne.mockResolvedValue(newQr);
+      mockClubs.findClub.mockResolvedValue(club);
+      mockHangers.detach.mockRejectedValue(new DetachEntityException(new Error("could not process the request")));
+      await expect(service.takeBreakTime("test")).rejects.toBeInstanceOf(DetachEntityException);
+    });
 
-    // it("should reject the break as the qr has been expired", () => {
-    //   expect(service.takeBreakTime("test")).rejects.toBeInstanceOf(ExpiredQrException);
-    // });
+    it("should reject the break as the qr has been expired", async () => {
+      let newQr: Partial<Qr> = { ...qr };
+      newQr.activeBreak = false;
+      newQr.breaks = [];
+      qr.active = false;
+      mockRepo.findOne.mockResolvedValue(newQr);
+      mockClubs.findClub.mockResolvedValue(club);
+      mockHangers.detach.mockResolvedValue(null);
+
+      await expect(service.takeBreakTime("test")).rejects.toBeInstanceOf(ExpiredQrException);
+    });
 
     // it("should undo the cronjob as the qr could not be successfully recorded on db", () => {
     //   expect(service.takeBreakTime("test")).rejects.toBeInstanceOf(BreakNotRecordedException);

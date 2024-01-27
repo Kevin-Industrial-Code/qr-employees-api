@@ -14,6 +14,7 @@ import { Types } from 'mongoose';
 import { ClubNotFoundException } from 'src/core/exceptions/club-not-found.exception';
 import { QrNotCandidateForBreakException } from 'src/core/exceptions/qr-not-candidate-for-break.exception';
 import { ActiveBreakException } from 'src/core/exceptions/active-break-exception';
+import { ExpiredQrException } from 'src/core/exceptions/expired-qr-exception';
 
 
 type Time = {
@@ -95,6 +96,10 @@ export class QrsService {
                 throw new ActiveBreakException(new Error("there is a break already active"));
             if (qr.breaks.length >= club.breakNumber)
                 throw new MaximumBreaktimesExceededException(new Error("the maximum number of breaktimes has been exceeded"));
+            let hangerId = await qr.hanger["_id"] as Types.ObjectId;
+            await this.hangersService.detach(hangerId.toString(), qrId);
+            if (!qr.active)
+                throw new ExpiredQrException(new Error("the given qr is already expired"));
             let usedTime = 0;
             let finishTime = new Date(Date.now() + club.breakTime * 60 * 1000 - usedTime);
             let cronTime;
@@ -114,10 +119,9 @@ export class QrsService {
             if (!qr.breaks) qr.breaks = [breaktime];
             else qr.breaks = [...qr.breaks, breaktime];
             qr.activeBreak = true;
-            let hangerId = await qr.hanger["_id"] as Types.ObjectId;
-            console.log(hangerId.toString())
+
             await this.qrRepo.update(qrId, qr);
-            await this.hangersService.detach(hangerId.toString(), qrId);
+
             return {
                 name: 'success',
                 message: 'Break Time initialized successfully'
