@@ -13,6 +13,7 @@ import { HangersService } from '../hangers/hangers.service';
 import { Types } from 'mongoose';
 import { ClubNotFoundException } from 'src/core/exceptions/club-not-found.exception';
 import { QrNotCandidateForBreakException } from 'src/core/exceptions/qr-not-candidate-for-break.exception';
+import { ActiveBreakException } from 'src/core/exceptions/active-break-exception';
 
 
 type Time = {
@@ -86,18 +87,15 @@ export class QrsService {
             if (!qr)
                 throw new QRNotFoundException(new Error('Qr not found'));
             let club = await this.clubsRepo.findClub(qr.clubId);
-            if (!club) throw new ClubNotFoundException(new Error('there was a problem finding your club'));
-            if (!qr.hanger) throw new QrNotCandidateForBreakException(new Error("the qr does not contain a hanger"))
+            if (!club)
+                throw new ClubNotFoundException(new Error('there was a problem finding your club'));
+            if (!qr.hanger)
+                throw new QrNotCandidateForBreakException(new Error("the qr does not contain a hanger"))
+            if (qr.activeBreak)
+                throw new ActiveBreakException(new Error("there is a break already active"));
+            if (qr.breaks.length >= club.breakNumber)
+                throw new MaximumBreaktimesExceededException(new Error("the maximum number of breaktimes has been exceeded"));
             let usedTime = 0;
-            if (qr.breaks) {
-                if (qr.breaks.length > club.breakNumber) throw new MaximumBreaktimesExceededException(new Error('Qr reached maximum allowed break times'));
-                for (let breakTime of qr.breaks) {
-                    if (!breakTime.finish) throw new BreaktimeAlreadyRunningException(new Error('the breaktime has already been initialized and hasnt been stopped'));
-                    let startTime = breakTime.start.getTime();
-                    let finishTime = breakTime.finish.getTime();
-                    usedTime += finishTime - startTime;
-                }
-            }
             let finishTime = new Date(Date.now() + club.breakTime * 60 * 1000 - usedTime);
             let cronTime;
             let { seconds, minutes, hours } = this.getTime(finishTime);
