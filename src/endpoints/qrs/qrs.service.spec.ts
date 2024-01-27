@@ -172,15 +172,13 @@ describe('QrsService', () => {
       await expect(service.takeBreakTime("test")).rejects.toBeInstanceOf(ExpiredQrException);
     });
 
-    // it("should undo the cronjob as the qr could not be successfully recorded on db", () => {
-    //   expect(service.takeBreakTime("test")).rejects.toBeInstanceOf(BreakNotRecordedException);
-    // });
+    it("should undo the cronjob as the qr could not be successfully recorded on db", async () => {
+      await expect(service.takeBreakTime("test")).rejects.toBeInstanceOf(BreakNotRecordedException);
+    });
 
-    // it("should post a break successfully", async () => {
-    // mockRepo.findOne.mockResolvedValue(qr);
-    // mockClubs.findClub.mockResolvedValue(club);
-    // await expect(service.takeBreakTime("testing")).resolves.toBeInstanceOf(Message);
-    // });
+    it("should post a break successfully", async () => {
+      await expect(service.takeBreakTime("testing")).resolves.toBeInstanceOf(Message);
+    });
 
   })
 });
