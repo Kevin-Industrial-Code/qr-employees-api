@@ -26,9 +26,13 @@ export class QrsController {
 
   @Get('breaks')
   listAllActiveBreaks() {
-    return new Promise<Message>((resolve, reject) => {
+    return new Promise<Map<string, any>>((resolve, reject) => {
       this.qrsService.listBreaks()
-      resolve(null)
+      .then((result) => {
+        resolve(result)
+      }).catch((err : Exception) => {
+        reject(err.getException());
+      });
     });
   }
 

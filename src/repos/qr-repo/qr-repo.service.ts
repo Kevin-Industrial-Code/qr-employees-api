@@ -70,6 +70,8 @@ export class QrRepoService {
 
     async update(qrId: string, qr: Partial<Qr>) {
         try {
+            if(qr.clubId) delete qr.clubId;
+            if(qr.orderId) delete qr.orderId;
             let update = await this.model.findByIdAndUpdate(qrId, qr);
             return update;
         } catch (error) {
@@ -79,6 +81,8 @@ export class QrRepoService {
 
     async createQr(qr: Qr) {
         try {
+            qr.orderId = new Types.ObjectId(qr.orderId) as any;
+            qr.clubId = new Types.ObjectId(qr.clubId) as any;
             return await this.model.create(qr)
         } catch (error) {
             throw new CreateEntityException(error);

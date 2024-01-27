@@ -41,6 +41,6 @@ export class Qr {
     @Prop({ type: String})
     paymentType : string;
     @Prop({ type: Boolean })
-    activeBreak : boolean;    
+    activeBreak : boolean;
 }
 export const QrSchema = SchemaFactory.createForClass(Qr);

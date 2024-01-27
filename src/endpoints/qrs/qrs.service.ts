@@ -39,6 +39,15 @@ export class QrsService {
         }
     }
 
+    async listBreaks(): Promise<Map<string, any>> {
+        try {
+            let crons = this.registry.getCronJobs();
+            return crons;
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async findQr(qrId: string): Promise<Qr> {
         try {
             let qr = await this.qrRepo.findOne(qrId);
@@ -76,15 +85,14 @@ export class QrsService {
             if (!qr)
                 throw new QRNotFoundException(new Error('Qr not found'));
             let club = await this.clubsRepo.findClub(qr.clubId);
-            if (!club)
-                throw new FetchEntityException(new Error('there was a problem finding your club'));
+            if (!qr) throw new QRNotFoundException(new Error('Qr not found'));
+            if (!club) throw new FetchEntityException(new Error('there was a problem finding your club'));
+
             let usedTime = 0;
             if (qr.breaks) {
-                if (qr.breaks.length > club.breakNumber)
-                    throw new MaximumBreaktimesExceededException(new Error('Qr reached maximum allowed break times'));
+                if (qr.breaks.length > club.breakNumber) throw new MaximumBreaktimesExceededException(new Error('Qr reached maximum allowed break times'));
                 for (let breakTime of qr.breaks) {
-                    if (!breakTime.finish)
-                        throw new BreaktimeAlreadyRunningException(new Error('the breaktime has already been initialized and hasnt been stopped'));
+                    if (!breakTime.finish) throw new BreaktimeAlreadyRunningException(new Error('the breaktime has already been initialized and hasnt been stopped'));
                     let startTime = breakTime.start.getTime();
                     let finishTime = breakTime.finish.getTime();
                     usedTime += finishTime - startTime;
@@ -154,10 +162,5 @@ export class QrsService {
             console.log(error)
             throw error;
         }
-    }
-
-    listBreaks(): any {
-        let crons = this.registry.getCronJobs()
-        return crons;
     }
 }

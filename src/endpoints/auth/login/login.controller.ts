@@ -1,7 +1,9 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { LoginService } from './login.service';
 import { Exception } from 'src/core/shared/exception';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Auth')
 @Controller('login')
 export class LoginController {
 
