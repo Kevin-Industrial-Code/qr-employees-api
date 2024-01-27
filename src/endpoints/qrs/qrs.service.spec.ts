@@ -16,6 +16,7 @@ import { MaximumBreaktimesExceededException } from 'src/core/exceptions/maximum-
 import { DetachEntityException } from 'src/core/exceptions/detach-entity-exception';
 import { ExpiredQrException } from 'src/core/exceptions/expired-qr-exception';
 import { BreakNotRecordedException } from 'src/core/exceptions/break-not-recorded-exception';
+import { UpdateEntityException } from 'src/core/exceptions/update-entity-exception';
 
 
 describe('QrsService', () => {
@@ -166,13 +167,29 @@ describe('QrsService', () => {
       await expect(service.takeBreakTime("test")).rejects.toBeInstanceOf(ExpiredQrException);
     });
 
-    it("should undo the cronjob as the qr could not be successfully recorded on db", async () => {
+    it("should throw error as the qr break time could not be recorded", async () => {
+      let newQr: Partial<Qr> = { ...qr };
+      newQr.activeBreak = false;
+      newQr.breaks = [];
+      newQr.active = true;
+      mockRepo.findOne.mockResolvedValue(newQr);
+      mockClubs.findClub.mockResolvedValue(club);
+      mockHangers.detach.mockResolvedValue(null);
+      mockRepo.update.mockRejectedValue(new UpdateEntityException(new Error("could not update the given qr")))
       await expect(service.takeBreakTime("test")).rejects.toBeInstanceOf(BreakNotRecordedException);
     });
 
     it("should post a break successfully", async () => {
-      await expect(service.takeBreakTime("testing")).resolves.toBeInstanceOf(Message);
+      let newQr: Partial<Qr> = { ...qr };
+      newQr.activeBreak = false;
+      newQr.breaks = [];
+      newQr.active = true;
+      mockRepo.findOne.mockResolvedValue(newQr);
+      mockClubs.findClub.mockResolvedValue(club);
+      mockHangers.detach.mockResolvedValue(null);
+      mockRepo.update.mockResolvedValue(null)
+      await expect(service.takeBreakTime("testing")).resolves.toStrictEqual({ name: 'success', message: 'Break Time initialized successfully' })
     });
 
-  })
+  });
 });

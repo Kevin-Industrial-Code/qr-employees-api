@@ -15,6 +15,7 @@ import { ClubNotFoundException } from 'src/core/exceptions/club-not-found.except
 import { QrNotCandidateForBreakException } from 'src/core/exceptions/qr-not-candidate-for-break.exception';
 import { ActiveBreakException } from 'src/core/exceptions/active-break-exception';
 import { ExpiredQrException } from 'src/core/exceptions/expired-qr-exception';
+import { BreakNotRecordedException } from 'src/core/exceptions/break-not-recorded-exception';
 
 
 type Time = {
@@ -120,7 +121,8 @@ export class QrsService {
             else qr.breaks = [...qr.breaks, breaktime];
             qr.activeBreak = true;
 
-            await this.qrRepo.update(qrId, qr);
+            await this.qrRepo.update(qrId, qr)
+            .catch(error => { throw new BreakNotRecordedException(error) });
 
             return {
                 name: 'success',
@@ -158,9 +160,8 @@ export class QrsService {
             return {
                 name: 'success',
                 message: 'Break Time stopped successfully'
-            }
+            };
         } catch (error) {
-            console.log(error)
             throw error;
         }
     }
