@@ -42,12 +42,6 @@ describe('QrsService', () => {
     detach: jest.fn()
   };
   let qr: Partial<Qr> = {
-    orderId: '',
-    clubId: '',
-    name: '',
-    email: '',
-    photo: '',
-    paymentStatus: false,
     hanger: {
       _id: {
         toString: jest.fn(() => "test")
