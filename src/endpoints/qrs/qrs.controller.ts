@@ -28,11 +28,11 @@ export class QrsController {
   listAllActiveBreaks() {
     return new Promise<Map<string, any>>((resolve, reject) => {
       this.qrsService.listBreaks()
-      .then((result) => {
-        resolve(result)
-      }).catch((err : Exception) => {
-        reject(err.getException());
-      });
+        .then((result) => {
+          resolve(result)
+        }).catch((err: Exception) => {
+          reject(err.getException());
+        });
     });
   }
 

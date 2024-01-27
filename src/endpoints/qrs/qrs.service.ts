@@ -11,6 +11,8 @@ import { MaximumBreaktimesExceededException } from 'src/core/exceptions/maximum-
 import { BreaktimeAlreadyRunningException } from 'src/core/exceptions/breaktime-already-running-exception';
 import { HangersService } from '../hangers/hangers.service';
 import { Types } from 'mongoose';
+import { ClubNotFoundException } from 'src/core/exceptions/club-not-found.exception';
+import { QrNotCandidateForBreakException } from 'src/core/exceptions/qr-not-candidate-for-break.exception';
 
 
 type Time = {
@@ -84,9 +86,8 @@ export class QrsService {
             if (!qr)
                 throw new QRNotFoundException(new Error('Qr not found'));
             let club = await this.clubsRepo.findClub(qr.clubId);
-            if (!qr) throw new QRNotFoundException(new Error('Qr not found'));
-            if (!club) throw new FetchEntityException(new Error('there was a problem finding your club'));
-
+            if (!club) throw new ClubNotFoundException(new Error('there was a problem finding your club'));
+            if (!qr.hanger) throw new QrNotCandidateForBreakException(new Error("the qr does not contain a hanger"))
             let usedTime = 0;
             if (qr.breaks) {
                 if (qr.breaks.length > club.breakNumber) throw new MaximumBreaktimesExceededException(new Error('Qr reached maximum allowed break times'));
@@ -124,7 +125,6 @@ export class QrsService {
                 message: 'Break Time initialized successfully'
             }
         } catch (error) {
-            console.log(error)
             throw error;
         }
     }
