@@ -11,7 +11,7 @@ export class UsersRepoService {
         @InjectModel(User.name) private userModel : Model<User>
     ) {}
 
-    async findUserByUsername(username : string) {
+    async findByUsername(username : string) {
         try {
             let user = await this.userModel.find({ username });
             return user;
