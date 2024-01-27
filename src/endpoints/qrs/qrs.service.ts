@@ -25,7 +25,6 @@ export class QrsService {
     constructor(
         private qrRepo: QrRepoService,
         private clubsRepo: ClubsRepoService,
-        // private logger: LoggerService,
         private registry: SchedulerRegistry,
         private hangersService: HangersService
     ) { }
