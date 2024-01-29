@@ -55,7 +55,7 @@ export class QrsService {
     async findQr(qrId: string): Promise<Qr> {
         try {
             let qr = await this.qrRepo.findOne(qrId);
-            if(!qr)
+            if (!qr)
                 throw new QRNotFoundException(new Error('no qr was founded'))
             qr.active = !qr.used ? true : qr.active;
             qr.used = qr.used || true;
@@ -124,7 +124,7 @@ export class QrsService {
             qr.activeBreak = true;
 
             await this.qrRepo.update(qrId, qr)
-            .catch(error => { throw new BreakNotRecordedException(error) });
+                .catch(error => { throw new BreakNotRecordedException(error) });
 
             return {
                 name: 'success',
@@ -157,6 +157,7 @@ export class QrsService {
             qr.breaks.push(lastBreak);
             qr.activeBreak = false;
 
+            // TODO: ADD LOGIC THAT IF A BREAK REACHED ITS MAXIMUM IT WILL DEACTIVATE THE QR
 
             await this.qrRepo.update(qrId, qr);
             return {
