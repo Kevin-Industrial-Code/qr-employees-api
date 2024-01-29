@@ -55,6 +55,8 @@ export class QrsService {
     async findQr(qrId: string): Promise<Qr> {
         try {
             let qr = await this.qrRepo.findOne(qrId);
+            if(!qr)
+                throw new QRNotFoundException(new Error('no qr was founded'))
             qr.active = !qr.used ? true : qr.active;
             qr.used = qr.used || true;
             await this.qrRepo.update(qrId, qr);
