@@ -14,7 +14,7 @@ export class UsersRepoService {
     async findByUsername(username : string) {
         try {
             let user = await this.userModel.find({ username });
-            return user;
+            return user[0];
         } catch (error) {
             throw new FetchEntityException(error);
         }
