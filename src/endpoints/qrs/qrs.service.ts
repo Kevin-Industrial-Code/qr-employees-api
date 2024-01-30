@@ -97,8 +97,9 @@ export class QrsService {
                 throw new QrNotCandidateForBreakException(new Error("the qr does not contain a hanger"))
             if (qr.activeBreak)
                 throw new ActiveBreakException(new Error("there is a break already active"));
-            if (qr.breaks.length >= club.breakNumber)
-                throw new MaximumBreaktimesExceededException(new Error("the maximum number of breaktimes has been exceeded"));
+            if(qr.breaks)
+                if (qr.breaks.length >= club.breakNumber)
+                    throw new MaximumBreaktimesExceededException(new Error("the maximum number of breaktimes has been exceeded"));
             let hangerId = await qr.hanger["_id"] as Types.ObjectId;
             await this.hangersService.detach(hangerId.toString(), qrId);
             if (!qr.active)
