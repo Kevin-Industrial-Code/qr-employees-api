@@ -39,7 +39,7 @@ export class HangersService {
         this.hangersRepo.detach(formerHangerId);
         this.qrsRepo.detachHanger(qrId);
       }
-      if(qr.breaks.length >= club.breakNumber)
+      if(qr.breaks.length > club.breakNumber)
       qr.active = false;
       await this.hangersRepo.assign(hangerId);
       qr.hanger = hanger;
