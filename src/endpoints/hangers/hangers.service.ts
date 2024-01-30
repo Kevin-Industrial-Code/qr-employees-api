@@ -10,8 +10,7 @@ import { ClubsRepoService } from 'src/repos/clubs-repo/clubs-repo.service';
 
 @Injectable()
 export class HangersService {
-
-
+  
   constructor(
     private hangersRepo: HangersManagerService,
     private qrsRepo: QrRepoService,
@@ -39,9 +38,10 @@ export class HangersService {
         this.hangersRepo.detach(formerHangerId);
         this.qrsRepo.detachHanger(qrId);
       }
-      if(qr.breaks)
-        if(qr.breaks.length > club.breakNumber)
-        qr.active = false;
+      if(qr.activeBreak)
+        if(qr.breaks)
+          if(qr.breaks.length > club.breakNumber)
+            qr.active = false;
       await this.hangersRepo.assign(hangerId);
       qr.hanger = hanger;
       qr.activeBreak = false;
@@ -57,10 +57,20 @@ export class HangersService {
     try {
       await this.qrsRepo.detachHanger(qrId);
       await this.hangersRepo.detach(hangerId);
+      await this.qrsRepo.update(qrId, {active: false});
       return { name: "success", message: "hanger detached successfully" };
     } catch (error) {
       throw error;
     }
   }
 
+  async softDetach(hangerId: string, qrId: string) {
+    try {
+      await this.qrsRepo.detachHanger(qrId);
+      await this.hangersRepo.detach(hangerId);
+      return { name: "success", message: "hanger detached successfully" };
+    } catch (error) {
+      throw error;
+    }
+  }
 }

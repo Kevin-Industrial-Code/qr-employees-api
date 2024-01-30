@@ -103,7 +103,7 @@ export class QrsService {
             if (!qr.active)
                 throw new ExpiredQrException(new Error("the given qr is already expired"));
             let hangerId = await qr.hanger["_id"] as Types.ObjectId;
-            await this.hangersService.detach(hangerId.toString(), qrId);
+            await this.hangersService.softDetach(hangerId.toString(), qrId);
             let breaks : Array<BreakTime> = qr.breaks? qr.breaks : [];
             breaks.push({
                 start: new Date(),
@@ -117,7 +117,7 @@ export class QrsService {
             return {
                 name: 'success',
                 message: 'Break Time initialized successfully'
-            }
+            };
         } catch (error) {
             throw error;
         }
