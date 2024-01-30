@@ -47,6 +47,7 @@ export class HangersService {
       await this.qrsRepo.assignHanger(qrId, qr);
       return { name: "success", message: "hanger associated successfully" };
     } catch (error) {
+      console.log(error);
       throw error;
     }
   }
