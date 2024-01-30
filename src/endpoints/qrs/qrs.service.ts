@@ -100,32 +100,19 @@ export class QrsService {
             if(qr.breaks)
                 if (qr.breaks.length >= club.breakNumber)
                     throw new MaximumBreaktimesExceededException(new Error("the maximum number of breaktimes has been exceeded"));
-            let hangerId = await qr.hanger["_id"] as Types.ObjectId;
-            await this.hangersService.detach(hangerId.toString(), qrId);
             if (!qr.active)
                 throw new ExpiredQrException(new Error("the given qr is already expired"));
-            let usedTime = 0;
-            let finishTime = new Date(Date.now() + club.breakTime * 60 * 1000 - usedTime);
-            let cronTime;
-            let { seconds, minutes, hours } = this.getTime(finishTime);
-            cronTime = `${seconds} ${minutes} ${hours} * * *`;
-            let job = new CronJob(cronTime, async () => {
-                qr.active = false;
-                this.qrRepo.update(qrId, qr);
-                this.registry.deleteCronJob(qrId);
-            })
-            this.registry.addCronJob(qrId, job as any);
-            job.start()
-            let breaktime: BreakTime = {
+            let hangerId = await qr.hanger["_id"] as Types.ObjectId;
+            await this.hangersService.detach(hangerId.toString(), qrId);
+            let breaks : Array<BreakTime> = qr.breaks? qr.breaks : [];
+            breaks.push({
                 start: new Date(),
-                finish: undefined
-            }
-            if (!qr.breaks) qr.breaks = [breaktime];
-            else qr.breaks = [...qr.breaks, breaktime];
-            qr.activeBreak = true;
-
-            await this.qrRepo.update(qrId, qr)
-                .catch(error => { throw new BreakNotRecordedException(error) });
+                finish: null
+            });
+            
+            let activeBreak = true;
+            await this.qrRepo.update(qrId, { activeBreak, breaks });
+            
 
             return {
                 name: 'success',
@@ -147,6 +134,7 @@ export class QrsService {
     async stopBreakTime(qrId: string) {
         try {
             let qr = await this.qrRepo.findOne(qrId);
+            let club = await this.clubsRepo.findClub(qr.clubId);
             try {
                 this.registry.deleteCronJob(qrId);
             } catch (error) {
@@ -158,8 +146,9 @@ export class QrsService {
             qr.breaks.push(lastBreak);
             qr.activeBreak = false;
 
-            // TODO: ADD LOGIC THAT IF A BREAK REACHED ITS MAXIMUM IT WILL DEACTIVATE THE QR
 
+            
+            
             await this.qrRepo.update(qrId, qr);
             return {
                 name: 'success',

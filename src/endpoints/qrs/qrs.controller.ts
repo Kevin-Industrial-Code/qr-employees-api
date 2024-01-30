@@ -29,6 +29,7 @@ export class QrsController {
     return new Promise<Map<string, any>>((resolve, reject) => {
       this.qrsService.listBreaks()
         .then((result) => {
+          console.log(result);
           resolve(result)
         }).catch((err: Exception) => {
           reject(err.getException());

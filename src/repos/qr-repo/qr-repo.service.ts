@@ -46,7 +46,7 @@ export class QrRepoService {
 
     async detachHanger(qrId: string) {
         try {
-            await this.model.findByIdAndUpdate(qrId, { $unset: { hanger: 1 } })
+            await this.model.findByIdAndUpdate(qrId, { $unset: { hanger: 1 }, $set: {active: false} })
         } catch (error) {
             throw new DetachEntityException(error);
         }

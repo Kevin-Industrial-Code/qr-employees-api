@@ -5,6 +5,8 @@ import { HangersManagerService } from 'src/repos/hangers-manager/hangers-manager
 import { QrRepoService } from 'src/repos/qr-repo/qr-repo.service';
 import { AssignHangerDto } from './dtos/assign-hanger.dto';
 import { LocationNotProvidedException } from 'src/core/exceptions/location-not-provided-exception';
+import { Club } from 'src/core/entities/club';
+import { ClubsRepoService } from 'src/repos/clubs-repo/clubs-repo.service';
 
 @Injectable()
 export class HangersService {
@@ -12,7 +14,8 @@ export class HangersService {
 
   constructor(
     private hangersRepo: HangersManagerService,
-    private qrsRepo: QrRepoService
+    private qrsRepo: QrRepoService,
+    private clubRepo : ClubsRepoService
   ) { }
 
   async listByLocation(locationId: string): Promise<Array<Hanger>> {
@@ -30,15 +33,17 @@ export class HangersService {
     try {
       let qr: Qr = await this.qrsRepo.findOne(qrId) as Qr;
       let hanger: Hanger = await this.hangersRepo.findOne(hangerId);
+      let club : Club = await this.clubRepo.findClub(qr.clubId);
       if (qr.hanger) {
         let formerHangerId = qr.hanger['_id'];
         this.hangersRepo.detach(formerHangerId);
         this.qrsRepo.detachHanger(qrId);
       }
-
+      if(qr.breaks.length >= club.breakNumber)
+      qr.active = false;
       await this.hangersRepo.assign(hangerId);
       qr.hanger = hanger;
-      qr.activeBreak = !qr.activeBreak;
+      qr.activeBreak = false;
       await this.qrsRepo.assignHanger(qrId, qr);
       return { name: "success", message: "hanger associated successfully" };
     } catch (error) {
