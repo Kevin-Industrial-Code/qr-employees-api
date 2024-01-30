@@ -32,6 +32,7 @@ export class HangersController {
       .then((result) => {
         resolve(result);
       }).catch((err : Exception) => {
+        console.log(err);
         reject(err)
       });
     });
