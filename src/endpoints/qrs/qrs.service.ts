@@ -113,6 +113,7 @@ export class QrsService {
             let activeBreak = true;
             await this.qrRepo.update(qrId, { activeBreak, breaks });
             
+            // TODO: Re definir los cronjobs para los breaks
 
             return {
                 name: 'success',

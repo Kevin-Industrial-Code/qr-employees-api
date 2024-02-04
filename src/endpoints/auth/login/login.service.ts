@@ -39,7 +39,11 @@ export class LoginService {
             if (user.rol == "customer")
                 throw new UnauthorizedLoginException(new Error("username or password incorrect"));
 
-            let payload = { name: user.name, rol: user.rol, email: user.email };
+            let payload = { 
+                name: user.name, 
+                rol: user.rol, 
+                email: user.email
+            };
             let access_token = this.jwtService.sign(payload)
             let session: SessionDto = {
                 access_token: access_token,
