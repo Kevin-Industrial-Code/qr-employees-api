@@ -10,6 +10,7 @@ import { LocationsModule } from './endpoints/locations/locations.module';
 import { OrdersModule } from './endpoints/orders/orders.module';
 import { ScheduleModule } from "@nestjs/schedule";
 import { AuthModule } from './endpoints/auth/auth.module';
+import { EmailModule } from './endpoints/email/email.module';
 config();
 
 const { URI_MONGODB } = process.env;
@@ -25,6 +26,7 @@ const { URI_MONGODB } = process.env;
     SlotsModule,
     LocationsModule,
     OrdersModule,
+    EmailModule,
     AuthModule,
   ],
 })

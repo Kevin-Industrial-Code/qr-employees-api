@@ -31,6 +31,7 @@
     "bcrypt": "^5.1.1",
     "cron": "^3.1.6",
     "dotenv": "^16.3.1",
+    "firebase-admin": "^12.0.0",
     "mongoose": "^8.0.3",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1"
@@ -76,6 +77,8 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
-    "modulePaths" : ["<rootDir>"]
+    "modulePaths": [
+      "<rootDir>"
+    ]
   }
 }
