@@ -40,20 +40,20 @@ export class ClubsRepoService {
         }
     }
 
-    async findAllClubs() {
+    async findAllClubs(filter = {}) {
         try {
-            let clubs = await this.model.find({emailForgottenItems: false}, ['closingHour', 'name', 'openingHour']);
+            let clubs = await this.model.find(filter, ['closingHour', 'name', 'openingHour', 'autoCleanItemList']);
             return clubs;
         } catch (error) {
             throw new ListEntityException(error);
         }
     }
 
-    async enableEmailForgottenItems(clubId: string): Promise<Club> {
+    async changeEmailForgottenItems(clubId: string, emailForgottenItems: boolean): Promise<Club> {
         try {
           const updatedClub = await this.model.findByIdAndUpdate(
             clubId,
-            { $set: { emailForgottenItems: true } },
+            { $set: { emailForgottenItems } },
             { new: true }
           );
           

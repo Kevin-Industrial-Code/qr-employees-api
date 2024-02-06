@@ -151,10 +151,14 @@ export class EmailService {
     }
   }
 
- //@Cron("1 * * * * *")
+  @Cron("0 0 * * * *")
   async sendEmailForgottenItems() {
     try {
-      const clubs = await this.clubsRepo.findAllClubs();
+      
+      const clubs = await this.clubsRepo.findAllClubs({
+        emailForgottenItems: false
+      });
+
       const now = moment();
 
       for (const club of clubs || []) {
@@ -170,21 +174,17 @@ export class EmailService {
         if (hoursSinceClosing > 3) {
 
           const qrCodes = await this.qrRepo.listQrsByClubId( club._id.toString() );
-          
+    
           for (const qr of qrCodes || []) {
+            //Enviamos el correo de los articulos olvidados
             await this.emailForgottenItems(qr, club)
           }
-
-          await this.clubsRepo.enableEmailForgottenItems( club._id.toString() );
-
-          console.log(`Enviamos un correo para articulos olvidados de: ${club.name}`);
-
-        } else  {
-          console.log(`No se envio nada de: ${club.name}`);
-        }
+          //Cambiamos emailForgottenItems: true para notificar que ya se enviaron los correos de articulos olvidados
+          await this.clubsRepo.changeEmailForgottenItems( club._id.toString(), true );
+        } 
       }
     } catch (error) {
-      throw new Error('ERROR SENDING EMAIL');
+      console.error("Error sending email:", error);
     }
   }
 

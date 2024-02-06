@@ -97,4 +97,20 @@ export class QrRepoService {
             throw new DisablingOldQrException(error);
         }
     }
+
+
+    async deactivateQrsByClubId(clubId: string) {
+        try {
+
+            const updateResult = await this.model.updateMany(
+                { clubId: new Types.ObjectId(clubId) },
+                { $set: { active: false } } 
+            );
+
+            return updateResult;
+        } catch (error) {
+            throw new UpdateEntityException(error);
+        }
+    }
+
 }

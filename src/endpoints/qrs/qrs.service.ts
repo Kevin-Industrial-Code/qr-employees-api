@@ -1,4 +1,5 @@
 import { Injectable, LoggerService } from '@nestjs/common';
+import moment from 'moment';
 import { Cron, SchedulerRegistry } from '@nestjs/schedule';
 import { Qr } from 'src/core/entities/qr';
 import { QrRepoService } from 'src/repos/qr-repo/qr-repo.service';
@@ -76,7 +77,6 @@ export class QrsService {
     }
 
     @Cron("0 0 5 * * *")
-    // @Cron("0 * * * * *")
     async disableQr() {
         try {
             await this.qrRepo.disableOldQrs()
@@ -147,8 +147,6 @@ export class QrsService {
             qr.breaks.push(lastBreak);
             qr.activeBreak = false;
 
-
-            
             
             await this.qrRepo.update(qrId, qr);
             return {
@@ -157,6 +155,35 @@ export class QrsService {
             };
         } catch (error) {
             throw error;
+        }
+    }
+
+    @Cron("0 0 * * * *")
+    async cleanItems() {
+        console.log("Me active")
+        try {
+
+            const clubs = await this.clubsRepo.findAllClubs({
+                autoCleanItemList: true
+            });
+    
+            const now = moment(); 
+    
+            for (const club of clubs || []) {
+
+                const openingTime = moment(club.openingHour, "HH:mm");
+                const minutesUntilOpening = openingTime.diff(now, 'minutes');
+    
+                if (minutesUntilOpening <= 60 && minutesUntilOpening > 0) {
+                    // Desactivamos todos los items cambiando la propiedad active: false
+                    await this.qrRepo.deactivateQrsByClubId( club._id.toString() );
+                    //Cambiamos emailForgottenItems: false para enviar los correos de objetos olviddos del dia siguiente
+                    await this.clubsRepo.changeEmailForgottenItems( club._id.toString(), false );
+                }
+            }
+    
+        } catch (error) {
+            console.error("Error processing clubs:", error);
         }
     }
 }
