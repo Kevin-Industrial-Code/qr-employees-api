@@ -16,6 +16,7 @@ export class Club {
     @Prop() breakNumber: number;
     @Prop() withGateway: boolean;
     @Prop() withCash: boolean;
+    @Prop({ default: false }) emailForgottenItems: boolean;
     @Prop() services: Array<Service>;
     @Prop({ type: mongoose.Types.ObjectId }) adminId: string;
 }
