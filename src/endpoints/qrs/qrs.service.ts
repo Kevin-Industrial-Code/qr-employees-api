@@ -160,7 +160,7 @@ export class QrsService {
 
     @Cron("0 0 * * * *")
     async cleanItems() {
-        console.log("Me active")
+
         try {
 
             const clubs = await this.clubsRepo.findAllClubs({
