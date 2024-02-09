@@ -57,7 +57,6 @@ export class HangersService {
     try {
       await this.qrsRepo.detachHanger(qrId);
       await this.hangersRepo.detach(hangerId);
-      await this.qrsRepo.update(qrId, { active: false });
       await this.qrsRepo.checkQr(qrId);
       return { name: "success", message: "hanger detached successfully" };
     } catch (error) {
