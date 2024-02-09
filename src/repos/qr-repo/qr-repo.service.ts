@@ -70,8 +70,8 @@ export class QrRepoService {
 
     async update(qrId: string, qr: Partial<Qr>) {
         try {
-            if(qr.clubId) delete qr.clubId;
-            if(qr.orderId) delete qr.orderId;
+            if (qr.clubId) delete qr.clubId;
+            if (qr.orderId) delete qr.orderId;
             let update = await this.model.findByIdAndUpdate(qrId, qr);
             return update;
         } catch (error) {
@@ -104,12 +104,22 @@ export class QrRepoService {
 
             const updateResult = await this.model.updateMany(
                 { clubId: new Types.ObjectId(clubId) },
-                { $set: { active: false } } 
+                { $set: { active: false } }
             );
 
             return updateResult;
         } catch (error) {
             throw new UpdateEntityException(error);
+        }
+    }
+
+    async checkQr(qrId: string) {
+        try {
+            let qr = await this.model.findById(qrId);
+            if (!qr.hanger && !qr.slot)
+                await this.model.findByIdAndUpdate(qrId, { active: false })
+        } catch (error) {
+            throw error;
         }
     }
 

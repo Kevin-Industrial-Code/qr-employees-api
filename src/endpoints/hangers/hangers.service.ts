@@ -10,11 +10,11 @@ import { ClubsRepoService } from 'src/repos/clubs-repo/clubs-repo.service';
 
 @Injectable()
 export class HangersService {
-  
+
   constructor(
     private hangersRepo: HangersManagerService,
     private qrsRepo: QrRepoService,
-    private clubRepo : ClubsRepoService
+    private clubRepo: ClubsRepoService
   ) { }
 
   async listByLocation(locationId: string): Promise<Array<Hanger>> {
@@ -32,15 +32,15 @@ export class HangersService {
     try {
       let qr: Qr = await this.qrsRepo.findOne(qrId) as Qr;
       let hanger: Hanger = await this.hangersRepo.findOne(hangerId);
-      let club : Club = await this.clubRepo.findClub(qr.clubId);
+      let club: Club = await this.clubRepo.findClub(qr.clubId);
       if (qr.hanger) {
         let formerHangerId = qr.hanger['_id'];
         this.hangersRepo.detach(formerHangerId);
         this.qrsRepo.detachHanger(qrId);
       }
-      if(qr.activeBreak)
-        if(qr.breaks)
-          if(qr.breaks.length > club.breakNumber)
+      if (qr.activeBreak)
+        if (qr.breaks)
+          if (qr.breaks.length > club.breakNumber)
             qr.active = false;
       await this.hangersRepo.assign(hangerId);
       qr.hanger = hanger;
@@ -57,7 +57,8 @@ export class HangersService {
     try {
       await this.qrsRepo.detachHanger(qrId);
       await this.hangersRepo.detach(hangerId);
-      await this.qrsRepo.update(qrId, {active: false});
+      await this.qrsRepo.update(qrId, { active: false });
+      await this.qrsRepo.checkQr(qrId);
       return { name: "success", message: "hanger detached successfully" };
     } catch (error) {
       throw error;

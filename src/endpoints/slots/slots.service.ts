@@ -9,7 +9,7 @@ export class SlotsService {
 
   constructor(
     private slotsRepo: SlotsManagerService,
-    private qrsRepo : QrRepoService
+    private qrsRepo: QrRepoService
   ) { }
 
   async listByLocation(locationId: string): Promise<Array<Slot>> {
@@ -21,11 +21,11 @@ export class SlotsService {
     }
   }
 
-  async assign(slotId : string, qrId : string) {
+  async assign(slotId: string, qrId: string) {
     try {
-      let qr : Qr = await this.qrsRepo.findOne(qrId) as Qr;
-      let slot : Slot = await this.slotsRepo.findOne(slotId);
-      if(qr.slot) {
+      let qr: Qr = await this.qrsRepo.findOne(qrId) as Qr;
+      let slot: Slot = await this.slotsRepo.findOne(slotId);
+      if (qr.slot) {
         let formerslotId = qr.slot['_id'];
         this.slotsRepo.detach(formerslotId);
         this.qrsRepo.detachSlot(qrId);
@@ -33,17 +33,18 @@ export class SlotsService {
       await this.slotsRepo.assign(slotId);
       qr.slot = slot;
       await this.qrsRepo.assignSlot(qrId, qr);
-      return { name : "success", message : "hanger associated successfully"};
+      return { name: "success", message: "hanger associated successfully" };
     } catch (error) {
       throw error;
     }
   }
 
-  async detach(slotId : string, qrId : string) {
+  async detach(slotId: string, qrId: string) {
     try {
       await this.qrsRepo.detachSlot(qrId);
       await this.slotsRepo.detach(slotId);
-      return { name : "success", message: "slot detached successfully"};
+      await this.qrsRepo.checkQr(qrId);
+      return { name: "success", message: "slot detached successfully" };
     } catch (error) {
       throw error;
     }
