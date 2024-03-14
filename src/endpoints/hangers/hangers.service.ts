@@ -55,9 +55,12 @@ export class HangersService {
 
   async detach(hangerId: string, qrId: string) {
     try {
+
+
       await this.qrsRepo.detachHanger(qrId);
       await this.hangersRepo.detach(hangerId);
-      await this.qrsRepo.checkQr(qrId);
+      await this.qrsRepo.deactivateQr(qrId);
+
       return { name: "success", message: "hanger detached successfully" };
     } catch (error) {
       throw error;

@@ -7,46 +7,46 @@ import { AssignHangerDto } from './dtos/assign-hanger.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/core/guards/auth/auth.guard';
 
-@UseGuards(AuthGuard)
+// @UseGuards(AuthGuard)
 @ApiTags('Hangers')
 @Controller('hangers')
 export class HangersController {
-  constructor(private readonly hangersService: HangersService) {}
+  constructor(private readonly hangersService: HangersService) { }
 
   @Get()
-  listByLocation(@Query('locationId') locationId : string) {
+  listByLocation(@Query('locationId') locationId: string) {
     return new Promise<Array<Hanger>>((resolve, reject) => {
       this.hangersService.listByLocation(locationId)
-      .then((result) => {
-        resolve(result);
-      }).catch((err : Exception) => {
-        reject(err.getException());
-      });
+        .then((result) => {
+          resolve(result);
+        }).catch((err: Exception) => {
+          reject(err.getException());
+        });
     });
   }
 
   @Post('assign')
-  assignHanger(@Body() { qrId, hangerId } : AssignHangerDto) {
+  assignHanger(@Body() { qrId, hangerId }: AssignHangerDto) {
     return new Promise<Message>((resolve, reject) => {
       this.hangersService.assign(hangerId, qrId)
-      .then((result) => {
-        resolve(result);
-      }).catch((err : Exception) => {
-        console.log(err);
-        reject(err)
-      });
+        .then((result) => {
+          resolve(result);
+        }).catch((err: Exception) => {
+          console.log(err);
+          reject(err)
+        });
     });
   }
 
   @Post('detach')
-  detachHanger(@Body() {hangerId, qrId } : AssignHangerDto) {
+  detachHanger(@Body() { hangerId, qrId }: AssignHangerDto) {
     return new Promise<Message>((resolve, reject) => {
       this.hangersService.detach(hangerId, qrId)
-      .then((result) => {
-        resolve(result);
-      }).catch((err : Exception) => {
-        reject(err.getException());
-      });
+        .then((result) => {
+          resolve(result);
+        }).catch((err: Exception) => {
+          reject(err.getException());
+        });
     });
   }
 

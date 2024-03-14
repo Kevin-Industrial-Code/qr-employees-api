@@ -43,7 +43,7 @@ export class SlotsService {
     try {
       await this.qrsRepo.detachSlot(qrId);
       await this.slotsRepo.detach(slotId);
-      await this.qrsRepo.checkQr(qrId);
+      await this.qrsRepo.deactivateQr(qrId);
       return { name: "success", message: "slot detached successfully" };
     } catch (error) {
       throw error;

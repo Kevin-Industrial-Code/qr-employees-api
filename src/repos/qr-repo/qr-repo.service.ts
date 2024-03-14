@@ -113,7 +113,7 @@ export class QrRepoService {
         }
     }
 
-    async checkQr(qrId: string) {
+    async deactivateQr(qrId: string) {
         try {
             let qr = await this.model.findById(qrId);
             if (!qr.hanger && !qr.slot)

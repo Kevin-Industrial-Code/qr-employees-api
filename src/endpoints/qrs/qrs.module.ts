@@ -8,5 +8,6 @@ import { HangersModule } from '../hangers/hangers.module';
   imports: [ReposModule, HangersModule],
   controllers: [QrsController],
   providers: [QrsService],
+  exports: [QrsService]
 })
 export class QrsModule { }
