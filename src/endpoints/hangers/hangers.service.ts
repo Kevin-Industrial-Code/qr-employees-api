@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { Hanger } from 'src/core/entities/hanger';
 import { Qr } from 'src/core/entities/qr';
 import { HangersManagerService } from 'src/repos/hangers-manager/hangers-manager.service';
@@ -33,11 +33,15 @@ export class HangersService {
       let qr: Qr = await this.qrsRepo.findOne(qrId) as Qr;
       let hanger: Hanger = await this.hangersRepo.findOne(hangerId);
       let club: Club = await this.clubRepo.findClub(qr.clubId);
+      if(hanger.status){
+        throw new UnauthorizedException("Hanger already assigned");
+      }
       if (qr.hanger) {
         let formerHangerId = qr.hanger['_id'];
         this.hangersRepo.detach(formerHangerId);
         this.qrsRepo.detachHanger(qrId);
       }
+      
       if (qr.activeBreak)
         if (qr.breaks)
           if (qr.breaks.length > club.breakNumber)
