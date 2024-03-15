@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { QrsService } from './qrs.service';
 import { Qr } from 'src/core/entities/qr';
 import { Exception } from 'src/core/shared/exception';
@@ -83,5 +83,10 @@ export class QrsController {
           reject(err.getException());
         });
     })
+  }
+
+  @Post("detach")
+  detachHanger(@Body() qr: Qr) {
+    return this.qrsService.detachHanger(qr)
   }
 }

@@ -76,6 +76,20 @@ export class QrsService {
         }
     }
 
+    async detachHanger(qr: Qr) {
+        try {
+            let qrData = await this.qrRepo.findOne(qr["_id"]);
+            let club = await this.clubsRepo.findClub(qr.clubId);
+            if (!qrData.breaks) {
+                return await this.takeBreakTime(qr["_id"]);
+            }
+            if (club.breakNumber == qrData.breaks.length)
+                return await this.hangersService.detach(qrData.hanger["_id"], qr["_id"]);
+        } catch (error) {
+            throw error;
+        }
+    }
+
     @Cron("0 0 5 * * *")
     async disableQr() {
         try {
@@ -97,27 +111,28 @@ export class QrsService {
                 throw new QrNotCandidateForBreakException(new Error("the qr does not contain a hanger"))
             if (qr.activeBreak)
                 throw new ActiveBreakException(new Error("there is a break already active"));
-            if(qr.breaks)
+            if (qr.breaks)
                 if (qr.breaks.length >= club.breakNumber)
                     throw new MaximumBreaktimesExceededException(new Error("the maximum number of breaktimes has been exceeded"));
             if (!qr.active)
                 throw new ExpiredQrException(new Error("the given qr is already expired"));
             let hangerId = await qr.hanger["_id"] as Types.ObjectId;
             await this.hangersService.softDetach(hangerId.toString(), qrId);
-            let breaks : Array<BreakTime> = qr.breaks? qr.breaks : [];
+            let breaks: Array<BreakTime> = qr.breaks ? qr.breaks : [];
             breaks.push({
                 start: new Date(),
                 finish: null
             });
-            
+
             let activeBreak = true;
             await this.qrRepo.update(qrId, { activeBreak, breaks });
-            
+
             // TODO: Re definir los cronjobs para los breaks
 
             return {
                 name: 'success',
-                message: 'Break Time initialized successfully'
+                message: 'Break Time initialized successfully',
+                entity: qr
             };
         } catch (error) {
             throw error;
@@ -147,7 +162,7 @@ export class QrsService {
             qr.breaks.push(lastBreak);
             qr.activeBreak = false;
 
-            
+
             await this.qrRepo.update(qrId, qr);
             return {
                 name: 'success',
@@ -166,22 +181,22 @@ export class QrsService {
             const clubs = await this.clubsRepo.findAllClubs({
                 autoCleanItemList: true
             });
-    
-            const now = moment(); 
-    
+
+            const now = moment();
+
             for (const club of clubs || []) {
 
                 const openingTime = moment(club.openingHour, "HH:mm");
                 const minutesUntilOpening = openingTime.diff(now, 'minutes');
-    
+
                 if (minutesUntilOpening <= 60 && minutesUntilOpening > 0) {
                     // Desactivamos todos los items cambiando la propiedad active: false
-                    await this.qrRepo.deactivateQrsByClubId( club._id.toString() );
+                    await this.qrRepo.deactivateQrsByClubId(club._id.toString());
                     //Cambiamos emailForgottenItems: false para enviar los correos de objetos olviddos del dia siguiente
-                    await this.clubsRepo.changeEmailForgottenItems( club._id.toString(), false );
+                    await this.clubsRepo.changeEmailForgottenItems(club._id.toString(), false);
                 }
             }
-    
+
         } catch (error) {
             console.error("Error processing clubs:", error);
         }

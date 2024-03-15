@@ -31,16 +31,16 @@ export class Qr {
     @Prop({ type: mongoose.Types.Map })
     slot: Slot;
     @Prop({ type: Boolean })
-    active : boolean;
+    active: boolean;
     @Prop({ type: Boolean })
-    used : boolean;
+    used: boolean;
     @Prop({ type: Boolean })
-    entry : boolean;
+    entry: boolean;
     @Prop({ type: mongoose.Types.Array })
     breaks: Array<BreakTime>;
-    @Prop({ type: String})
-    paymentType : string;
+    @Prop({ type: String })
+    paymentType: string;
     @Prop({ type: Boolean })
-    activeBreak : boolean;
+    activeBreak: boolean;
 }
 export const QrSchema = SchemaFactory.createForClass(Qr);
