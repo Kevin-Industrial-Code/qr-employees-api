@@ -11,6 +11,7 @@ import { OrdersModule } from './endpoints/orders/orders.module';
 import { ScheduleModule } from "@nestjs/schedule";
 import { AuthModule } from './endpoints/auth/auth.module';
 import { EmailModule } from './endpoints/email/email.module';
+import { PlansModule } from './endpoints/plans/plans.module';
 config();
 
 const { URI_MONGODB } = process.env;
@@ -28,6 +29,7 @@ const { URI_MONGODB } = process.env;
     OrdersModule,
     EmailModule,
     AuthModule,
+    PlansModule,
   ],
 })
 export class AppModule { }

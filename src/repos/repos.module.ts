@@ -14,6 +14,8 @@ import { OrdersRepoService } from './orders-repo/orders-repo.service';
 import { Order, OrderSchema } from 'src/core/entities/order';
 import { UsersRepoService } from './users-repo/users-repo.service';
 import { User, UserSchema } from 'src/core/entities/user';
+import { PlansRepoService } from './plans-repo/plans-repo.service';
+import { Plan, PlanSchema } from 'src/core/entities/plan';
 
 const repos = [
   HangersManagerService,
@@ -22,7 +24,8 @@ const repos = [
   ClubsRepoService,
   LocationsRepoService,
   OrdersRepoService,
-  UsersRepoService
+  UsersRepoService,
+  PlansRepoService
 ]
 
 @Module({
@@ -34,7 +37,8 @@ const repos = [
       { name: Location.name, schema: locationSchema },
       { name: Slot.name, schema: slotSchema },
       { name: Order.name, schema: OrderSchema},
-      { name: User.name, schema: UserSchema }
+      { name: User.name, schema: UserSchema },
+      { name: Plan.name, schema: PlanSchema }
     ])
   ],
   providers: repos,
