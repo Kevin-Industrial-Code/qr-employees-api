@@ -35,6 +35,59 @@ export class QrsService {
         private hangersService: HangersService
     ) { }
 
+    /**
+     * camera module functions
+     */
+
+    async findQr(qrId: string): Promise<Qr> {
+        try {
+            let qr = await this.qrRepo.findOne(qrId);
+            if (!qr)
+                throw new QRNotFoundException(new Error('no qr was founded'))
+            qr.active = !qr.used ? true : qr.active;
+            qr.used = qr.used || true;
+            await this.qrRepo.update(qrId, qr);
+            return qr;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async assignHanger({qrId, hangerId}: {qrId : string, hangerId: string}) {
+        try {
+            await this.hangersService.assign(qrId, hangerId);
+            let qr = await this.qrRepo.findOne(qrId);
+            return qr;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async detachHanger({qrId} : { qrId : string }) {
+        try {
+            let qrData = await this.qrRepo.findOne(qrId);
+            let club = await this.clubsRepo.findClub(qrData.clubId);
+            if (!qrData.breaks) {
+                await this.takeBreakTime(qrId);
+            }
+            console.log(qrData);
+            if (club.breakNumber == qrData.breaks.length)
+                await this.hangersService.detach(qrData.hanger['_id'], qrId);
+            else
+                await this.takeBreakTime(qrId);
+            let qr = await this.qrRepo.findOne(qrId);
+            return qr;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    /**
+     * item list module functions
+     * @param clubId 
+     * @returns 
+     */
+
     async listQrs(clubId: string) {
         try {
             let qrs = await this.qrRepo.listQrsByClubId(clubId);
@@ -53,19 +106,7 @@ export class QrsService {
         }
     }
 
-    async findQr(qrId: string): Promise<Qr> {
-        try {
-            let qr = await this.qrRepo.findOne(qrId);
-            if (!qr)
-                throw new QRNotFoundException(new Error('no qr was founded'))
-            qr.active = !qr.used ? true : qr.active;
-            qr.used = qr.used || true;
-            await this.qrRepo.update(qrId, qr);
-            return qr;
-        } catch (error) {
-            throw error;
-        }
-    }
+    
 
     async updateQr(qrId: string, qr: Qr) {
         try {
@@ -76,19 +117,6 @@ export class QrsService {
         }
     }
 
-    async detachHanger(qr: Qr) {
-        try {
-            let qrData = await this.qrRepo.findOne(qr["_id"]);
-            let club = await this.clubsRepo.findClub(qr.clubId);
-            if (!qrData.breaks) {
-                return await this.takeBreakTime(qr["_id"]);
-            }
-            if (club.breakNumber == qrData.breaks.length)
-                return await this.hangersService.detach(qrData.hanger["_id"], qr["_id"]);
-        } catch (error) {
-            throw error;
-        }
-    }
 
     @Cron("0 0 5 * * *")
     async disableQr() {
@@ -135,6 +163,7 @@ export class QrsService {
                 entity: qr
             };
         } catch (error) {
+            console.log(error);
             throw error;
         }
     }

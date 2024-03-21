@@ -10,7 +10,44 @@ import { Message } from 'src/core/shared/message';
 @ApiTags('Qrs')
 @Controller('qrs')
 export class QrsController {
+  
   constructor(private readonly qrsService: QrsService) { }
+
+  /**
+   * endpoints related to the camera module mainly
+   * @param qrId 
+   * @returns 
+   */
+
+  @Get(':id')
+  getQr(@Param('id') qrId: string) {
+    return new Promise<Qr>((resolve, reject) => {
+      this.qrsService.findQr(qrId)
+        .then((result) => {
+          resolve(result);
+        }).catch((err: Exception) => {
+          reject(err.getException());
+        });
+    })
+  }
+
+  @Post("assign")
+  assignHanger(@Body() qr: any) {
+    return this.qrsService.assignHanger(qr)
+  }
+
+  @Post("detach")
+  detachHanger(@Body() qr: any) {
+    return this.qrsService.detachHanger(qr)
+  }
+
+
+
+  /**
+   * functions related to the item list
+   * @param clubId 
+   * @returns 
+   */
 
   @Get()
   listQrs(@Query('clubId') clubId: string) {
@@ -37,17 +74,7 @@ export class QrsController {
     });
   }
 
-  @Get(':id')
-  getQr(@Param('id') qrId: string) {
-    return new Promise<Qr>((resolve, reject) => {
-      this.qrsService.findQr(qrId)
-        .then((result) => {
-          resolve(result);
-        }).catch((err: Exception) => {
-          reject(err.getException());
-        });
-    })
-  }
+  
 
   @Patch(':id')
   updateQr(@Param('id') qrId: string, @Body() qr: Qr) {
@@ -85,8 +112,4 @@ export class QrsController {
     })
   }
 
-  @Post("detach")
-  detachHanger(@Body() qr: Qr) {
-    return this.qrsService.detachHanger(qr)
-  }
 }

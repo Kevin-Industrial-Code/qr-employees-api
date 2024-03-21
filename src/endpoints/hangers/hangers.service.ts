@@ -28,7 +28,7 @@ export class HangersService {
     }
   }
 
-  async assign(hangerId: string, qrId: string) {
+  async assign(qrId: string, hangerId: string) {
     try {
       let qr: Qr = await this.qrsRepo.findOne(qrId) as Qr;
       let hanger: Hanger = await this.hangersRepo.findOne(hangerId);
@@ -52,15 +52,12 @@ export class HangersService {
       await this.qrsRepo.assignHanger(qrId, qr);
       return { name: "success", message: "hanger associated successfully" };
     } catch (error) {
-      console.log(error);
       throw error;
     }
   }
 
   async detach(hangerId: string, qrId: string) {
     try {
-
-
       await this.qrsRepo.detachHanger(qrId);
       await this.hangersRepo.detach(hangerId);
       await this.qrsRepo.deactivateQr(qrId);
