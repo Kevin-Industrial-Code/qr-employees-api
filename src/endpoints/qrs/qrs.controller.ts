@@ -56,7 +56,7 @@ export class QrsController {
         .then((result) => {
           resolve(result);
         }).catch((err: Exception) => {
-          reject(err.getException());
+          reject(err);
         });
     })
   }
@@ -69,7 +69,7 @@ export class QrsController {
           console.log(result);
           resolve(result)
         }).catch((err: Exception) => {
-          reject(err.getException());
+          reject(err);
         });
     });
   }
@@ -83,7 +83,7 @@ export class QrsController {
         .then((result) => {
           resolve(result);
         }).catch((err: Exception) => {
-          reject(err.getException());
+          reject(err);
         });
     })
   }

@@ -7,7 +7,7 @@ import { AssignHangerDto } from './dtos/assign-hanger.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/core/guards/auth/auth.guard';
 
-// @UseGuards(AuthGuard)
+@UseGuards(AuthGuard)
 @ApiTags('Hangers')
 @Controller('hangers')
 export class HangersController {
@@ -20,7 +20,7 @@ export class HangersController {
         .then((result) => {
           resolve(result);
         }).catch((err: Exception) => {
-          reject(err.getException());
+          reject(err)
         });
     });
   }
@@ -32,7 +32,6 @@ export class HangersController {
         .then((result) => {
           resolve(result);
         }).catch((err: Exception) => {
-          console.log(err);
           reject(err)
         });
     });
@@ -45,7 +44,7 @@ export class HangersController {
         .then((result) => {
           resolve(result);
         }).catch((err: Exception) => {
-          reject(err.getException());
+          reject(err)
         });
     });
   }

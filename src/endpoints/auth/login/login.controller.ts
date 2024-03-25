@@ -19,7 +19,7 @@ export class LoginController {
             .then((result) => {
                 resolve(result)
             }).catch((err : Exception) => {
-                reject(err.getException())
+                reject(err)
             });
         })
     }
