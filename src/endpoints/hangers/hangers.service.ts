@@ -33,8 +33,6 @@ export class HangersService {
 
       let qr: Qr = await this.qrsRepo.findOne(qrId) as Qr;
       let hanger: Hanger = await this.hangersRepo.findOne(hangerId);
-
-      console.log(qr);
       let club: Club = await this.clubRepo.findClub(qr.clubId);
       if(hanger.status){
         throw new UnauthorizedException("Hanger already assigned");

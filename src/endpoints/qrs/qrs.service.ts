@@ -70,7 +70,6 @@ export class QrsService {
             if (!qrData.breaks) {
                 await this.takeBreakTime(qrId);
             }
-            console.log(qrData);
             if (club.breakNumber == qrData.breaks.length)
                 await this.hangersService.detach(qrData.hanger['_id'], qrId);
             else
@@ -163,7 +162,6 @@ export class QrsService {
                 entity: qr
             };
         } catch (error) {
-            console.log(error);
             throw error;
         }
     }
