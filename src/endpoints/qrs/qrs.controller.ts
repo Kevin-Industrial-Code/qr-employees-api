@@ -46,7 +46,10 @@ export class QrsController {
     return this.qrsService.postNewSlotUsage(qr);
   }
 
-
+  @Post('payment')
+  postConfirmPayment(@Body() qr : Qr) {
+    return this.qrsService.confirmPaymentMethod(qr);
+  }
 
 
   /**

@@ -1,4 +1,4 @@
-import { Injectable, LoggerService } from '@nestjs/common';
+import { Injectable, LoggerService, UnauthorizedException } from '@nestjs/common';
 import moment from 'moment';
 import { Cron, SchedulerRegistry } from '@nestjs/schedule';
 import { Qr } from 'src/core/entities/qr';
@@ -71,12 +71,44 @@ export class QrsService {
             if (!qrData.breaks) {
                 await this.takeBreakTime(qrId);
             }
+            if(!qrData.hanger)
+                throw new UnauthorizedException("No hanger to detach")
             if (club.breakNumber == qrData.breaks.length)
                 await this.hangersService.detach(qrData.hanger['_id'], qrId);
             else
                 await this.takeBreakTime(qrId);
             let qr = await this.qrRepo.findOne(qrId);
             return qr;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async postNewSlotUsage(qr: Qr) {
+        try {
+            let id = qr._id;
+            let newQr = { ...qr };
+            if(!qr.slot)
+                await this.qrRepo.assignSlot(id, { slot: true })
+            else
+                await this.qrRepo.assignSlot(id, { slot: !qr.slot })
+            newQr.slot = qr.slot? !qr.slot : true ;
+            return newQr
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async confirmPaymentMethod(qr : Qr) {
+        try {
+            let id = qr._id;
+            let newQr = { ...qr };
+            if(!qr.slot)
+                await this.qrRepo.update(id, { paymentStatus: true })
+            else
+                await this.qrRepo.update(id, { paymentStatus: !qr.paymentStatus })
+            newQr.paymentStatus = qr.paymentStatus? !qr.paymentStatus : true ;
+            return newQr
         } catch (error) {
             throw error;
         }
@@ -230,19 +262,5 @@ export class QrsService {
         }
     }
 
-    async postNewSlotUsage(qr: Qr) {
-        try {
-            let id = qr._id;
-            let newQr = { ...qr };
-            if(!qr.slot)
-                await this.qrRepo.assignSlot(id, { slot: true })
-            else
-                await this.qrRepo.assignSlot(id, { slot: !qr.slot })
-            newQr.slot = qr.slot? !qr.slot : true ;
-            return newQr
-        } catch (error) {
-            console.log(error);
-            throw error;
-        }
-    }
+    
 }
