@@ -233,12 +233,13 @@ export class QrsService {
     async postNewSlotUsage(qr: Qr) {
         try {
             let id = qr._id;
-            let newQr = { ...qr, slot: true };
+            let newQr = { ...qr };
             if(!qr.slot)
                 await this.qrRepo.assignSlot(id, { slot: true })
             else
                 await this.qrRepo.assignSlot(id, { slot: !qr.slot })
-            return newQr;
+            newQr.slot = qr.slot? !qr.slot : true ;
+            return newQr
         } catch (error) {
             console.log(error);
             throw error;
