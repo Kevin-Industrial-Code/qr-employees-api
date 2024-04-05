@@ -27,6 +27,7 @@ type Time = {
 
 @Injectable()
 export class QrsService {
+    
 
     constructor(
         private qrRepo: QrRepoService,
@@ -226,6 +227,17 @@ export class QrsService {
 
         } catch (error) {
             console.error("Error processing clubs:", error);
+        }
+    }
+
+    async postNewSlotUsage(qr: Qr) {
+        try {
+            let id = qr._id;
+            let newQr = { ...qr, slot: true };
+            await this.qrRepo.assignSlot(id, { slot: true })
+            return newQr;
+        } catch (error) {
+            throw error;
         }
     }
 }

@@ -12,6 +12,7 @@ export type BreakTime = {
 
 @Schema()
 export class Qr {
+    _id? : string;
     @Prop({ type: mongoose.Types.ObjectId })
     orderId: string;
     @Prop({ type: mongoose.Types.ObjectId })
@@ -29,7 +30,7 @@ export class Qr {
     @Prop({ type: mongoose.Types.Array })
     services: Array<any>;
     @Prop({ type: mongoose.Types.Map })
-    slot: Slot;
+    slot: any;
     @Prop({ type: Boolean })
     active: boolean;
     @Prop({ type: Boolean })

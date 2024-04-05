@@ -111,4 +111,9 @@ export class QrsController {
     })
   }
 
+  @Post('slot')
+  postNewSlot(@Body() qr : Qr) {
+    return this.qrsService.postNewSlotUsage(qr);
+  }
+
 }
