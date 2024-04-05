@@ -234,7 +234,10 @@ export class QrsService {
         try {
             let id = qr._id;
             let newQr = { ...qr, slot: true };
-            await this.qrRepo.assignSlot(id, { slot: true })
+            if(!qr.slot)
+                await this.qrRepo.assignSlot(id, { slot: true })
+            else
+                await this.qrRepo.assignSlot(id, { slot: !qr.slot })
             return newQr;
         } catch (error) {
             console.log(error);
