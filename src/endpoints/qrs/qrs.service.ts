@@ -237,6 +237,7 @@ export class QrsService {
             await this.qrRepo.assignSlot(id, { slot: true })
             return newQr;
         } catch (error) {
+            console.log(error);
             throw error;
         }
     }

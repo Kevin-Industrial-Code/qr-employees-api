@@ -29,7 +29,7 @@ export class Qr {
     hanger: Partial<Hanger>;
     @Prop({ type: mongoose.Types.Array })
     services: Array<any>;
-    @Prop({ type: mongoose.Types.Map })
+    @Prop({ type: Boolean })
     slot: any;
     @Prop({ type: Boolean })
     active: boolean;

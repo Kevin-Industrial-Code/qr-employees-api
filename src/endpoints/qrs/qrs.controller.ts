@@ -41,6 +41,12 @@ export class QrsController {
     return this.qrsService.detachHanger(qr)
   }
 
+  @Post('slot')
+  postNewSlot(@Body() qr : Qr) {
+    return this.qrsService.postNewSlotUsage(qr);
+  }
+
+
 
 
   /**
@@ -111,9 +117,5 @@ export class QrsController {
     })
   }
 
-  @Post('slot')
-  postNewSlot(@Body() qr : Qr) {
-    return this.qrsService.postNewSlotUsage(qr);
-  }
 
 }
