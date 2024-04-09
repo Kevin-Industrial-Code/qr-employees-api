@@ -52,7 +52,7 @@ export class QrRepoService {
         }
     }
 
-    async assignSlot(qrId: string, qr: Qr) {
+    async assignSlot(qrId: string, qr: Partial<Qr>) {
         try {
             await this.model.findByIdAndUpdate(qrId, qr);
         } catch (error) {

@@ -41,6 +41,15 @@ export class QrsController {
     return this.qrsService.detachHanger(qr)
   }
 
+  @Post('slot')
+  postNewSlot(@Body() qr : Qr) {
+    return this.qrsService.postNewSlotUsage(qr);
+  }
+
+  @Post('payment')
+  postConfirmPayment(@Body() qr : Qr) {
+    return this.qrsService.confirmPaymentMethod(qr);
+  }
 
 
   /**
@@ -110,5 +119,6 @@ export class QrsController {
         });
     })
   }
+
 
 }
