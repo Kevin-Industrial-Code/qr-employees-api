@@ -6,7 +6,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/core/guards/auth/auth.guard';
 import { Message } from 'src/core/shared/message';
 
-@UseGuards(AuthGuard)
+// @UseGuards(AuthGuard)
 @ApiTags('Qrs')
 @Controller('qrs')
 export class QrsController {

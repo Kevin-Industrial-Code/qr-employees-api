@@ -60,8 +60,8 @@ export class QrsService {
             if(qr.expired)
                 throw new UnauthorizedException("Qr expired");
             await this.hangersService.assign(qrId, hangerId);
-
-            return qr;
+            let newqr = await this.qrRepo.findOne(qrId)
+            return newqr;
         } catch (error) {
             throw error;
         }
@@ -72,11 +72,11 @@ export class QrsService {
             let qrData = await this.qrRepo.findOne(qrId);
             let club = await this.clubsRepo.findClub(qrData.clubId);
             if (!qrData.breaks) {
-                await this.takeBreakTime(qrId);
+                return await this.takeBreakTime(qrId);
             }
             if(!qrData.hanger)
                 throw new UnauthorizedException("No hanger to detach")
-            if (club.breakNumber == qrData.breaks.length){
+            if (qrData.breaks && club.breakNumber == qrData.breaks.length){
                 await this.hangersService.detach(qrData.hanger['_id'], qrId);
                 await this.qrRepo.detachHanger(qrId);
                 await this.qrRepo.update(qrId, {active: false, expired: true})
@@ -202,6 +202,7 @@ export class QrsService {
                 entity: qr
             };
         } catch (error) {
+            console.log(error);
             throw error;
         }
     }
