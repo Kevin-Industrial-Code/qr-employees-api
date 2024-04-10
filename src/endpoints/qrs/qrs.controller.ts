@@ -6,7 +6,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/core/guards/auth/auth.guard';
 import { Message } from 'src/core/shared/message';
 
-@UseGuards(AuthGuard)
+// @UseGuards(AuthGuard)
 @ApiTags('Qrs')
 @Controller('qrs')
 export class QrsController {
@@ -18,6 +18,20 @@ export class QrsController {
    * @param qrId 
    * @returns 
    */
+
+  @Get('breaks')
+  listAllActiveBreaks() {
+    console.log(`object`);
+    return new Promise<Map<string, any>>((resolve, reject) => {
+      this.qrsService.listBreaks()
+        .then((result) => {
+          resolve(result)
+        }).catch((err: Exception) => {
+          reject(err);
+        });
+    });
+  }
+
 
   @Get(':id')
   getQr(@Param('id') qrId: string) {
@@ -70,18 +84,7 @@ export class QrsController {
     })
   }
 
-  @Get('breaks')
-  listAllActiveBreaks() {
-    return new Promise<Map<string, any>>((resolve, reject) => {
-      this.qrsService.listBreaks()
-        .then((result) => {
-          resolve(result)
-        }).catch((err: Exception) => {
-          reject(err);
-        });
-    });
-  }
-
+  
   
 
   @Patch(':id')
