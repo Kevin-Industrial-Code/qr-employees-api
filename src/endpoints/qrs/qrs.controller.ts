@@ -19,6 +19,20 @@ export class QrsController {
    * @returns 
    */
 
+  @Get('breaks')
+  listAllActiveBreaks() {
+    console.log(`object`);
+    return new Promise<Map<string, any>>((resolve, reject) => {
+      this.qrsService.listBreaks()
+        .then((result) => {
+          resolve(result)
+        }).catch((err: Exception) => {
+          reject(err);
+        });
+    });
+  }
+
+
   @Get(':id')
   getQr(@Param('id') qrId: string) {
     return new Promise<Qr>((resolve, reject) => {
@@ -70,18 +84,7 @@ export class QrsController {
     })
   }
 
-  @Get('breaks')
-  listAllActiveBreaks() {
-    return new Promise<Map<string, any>>((resolve, reject) => {
-      this.qrsService.listBreaks()
-        .then((result) => {
-          resolve(result)
-        }).catch((err: Exception) => {
-          reject(err);
-        });
-    });
-  }
-
+  
   
 
   @Patch(':id')

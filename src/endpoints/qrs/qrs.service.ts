@@ -60,6 +60,17 @@ export class QrsService {
             if(qr.expired)
                 throw new UnauthorizedException("Qr expired");
             await this.hangersService.assign(qrId, hangerId);
+            if(qr.activeBreak){
+                await this.stopBreakTime(qrId)
+                .then((result) => {
+                    console.log(`breaktime stopped`);
+                    return 0;
+                }).catch((err) => {
+                    console.log(`breaktime could not be stopped`);
+                    return 0;
+                });
+            }
+
             let newqr = await this.qrRepo.findOne(qrId)
             return newqr;
         } catch (error) {
@@ -139,6 +150,7 @@ export class QrsService {
     async listBreaks(): Promise<Map<string, any>> {
         try {
             let crons = this.registry.getCronJobs();
+            console.log(crons);
             return crons;
         } catch (error) {
             throw error;
@@ -164,6 +176,20 @@ export class QrsService {
         } catch (error) {
             // TODO: add logic to handle exceptions from disabling old qrs
         }
+    }
+
+    private timestampToCronJobString(timestamp) {
+        const date = new Date(timestamp);
+        const minute = date.getMinutes();
+        const hour = date.getHours();
+        const dayOfMonth = date.getDate();
+        const month = date.getMonth() + 1; // Months are zero-indexed
+        const dayOfWeek = date.getDay(); // 0 represents Sunday, 1 represents Monday, and so on
+    
+        // Convert the timestamp to a cron job string format
+        const cronJobString = `${minute} ${hour} ${dayOfMonth} ${month} ${dayOfWeek}`;
+    
+        return cronJobString;
     }
 
     async takeBreakTime(qrId: string) {
@@ -195,6 +221,11 @@ export class QrsService {
             await this.qrRepo.update(qrId, { activeBreak, breaks });
 
             // TODO: Re definir los cronjobs para los breaks
+            let time = this.timestampToCronJobString(Date.now() + club.breakTime * 60 * 1000);
+            let cronJob = new CronJob(time, () => {
+                this.qrRepo.update(qrId, {active: false, expired: true, activeBreak: false });
+            });
+            this.registry.addCronJob(qrId, cronJob as any)
 
             return {
                 name: 'success',
