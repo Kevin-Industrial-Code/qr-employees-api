@@ -82,15 +82,14 @@ export class QrsService {
         try {
             let qrData = await this.qrRepo.findOne(qrId);
             let club = await this.clubsRepo.findClub(qrData.clubId);
-            if (!qrData.breaks) {
+            if (!qrData.breaks)
                 return await this.takeBreakTime(qrId);
-            }
             if(!qrData.hanger)
                 throw new UnauthorizedException("No hanger to detach")
             if (qrData.breaks && club.breakNumber == qrData.breaks.length){
                 await this.hangersService.detach(qrData.hanger['_id'], qrId);
                 await this.qrRepo.detachHanger(qrId);
-                await this.qrRepo.update(qrId, {active: false, expired: true})
+                await this.qrRepo.update(qrId, {active: false, expired: true, slot: false})
             }
                 
             else
