@@ -25,7 +25,7 @@ export class HangersController {
     });
   }
 
-  @Get (': id')
+  @Get(':id')
     async findOne(@Param('id') hangerId: string): Promise<Hanger> {
     return this.hangersService.findOne(hangerId);
   }

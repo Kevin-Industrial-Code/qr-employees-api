@@ -45,5 +45,7 @@ export class Qr {
     activeBreak: boolean;
     @Prop({ type: Boolean })
     expired: boolean
+    @Prop({ type: String })
+    urlQr: string
 }
 export const QrSchema = SchemaFactory.createForClass(Qr);
