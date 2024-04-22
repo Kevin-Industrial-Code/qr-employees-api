@@ -25,6 +25,11 @@ export class HangersController {
     });
   }
 
+  @Get (': id')
+    async findOne(@Param('id') hangerId: string): Promise<Hanger> {
+    return this.hangersService.findOne(hangerId);
+  }
+
   @Post('assign')
   assignHanger(@Body() { qrId, hangerId }: AssignHangerDto) {
     return new Promise<Message>((resolve, reject) => {

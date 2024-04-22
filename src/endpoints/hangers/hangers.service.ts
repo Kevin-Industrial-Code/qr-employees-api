@@ -78,4 +78,9 @@ export class HangersService {
       throw error;
     }
   }
+
+  async findOne (id: string): Promise<Hanger> {
+    return this.hangersRepo.findOne(id);
+  }
+
 }
