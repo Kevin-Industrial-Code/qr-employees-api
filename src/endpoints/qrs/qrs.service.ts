@@ -44,10 +44,21 @@ export class QrsService {
         try {
             let qr = await this.qrRepo.findOne(qrId);
             if (!qr)
-                throw new QRNotFoundException(new Error('no qr was founded'))
+                throw new QRNotFoundException(new Error('No qr was founded'))
             qr.active = !qr.used ? true : qr.active;
             qr.used = qr.used || true;
             await this.qrRepo.update(qrId, qr);
+            return qr;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async onlyFindQr(qrId: string): Promise<Qr> {
+        try {
+            let qr = await this.qrRepo.findOne(qrId);
+            if (!qr)
+                throw new QRNotFoundException(new Error('No qr was founded'))
             return qr;
         } catch (error) {
             throw error;
@@ -149,7 +160,6 @@ export class QrsService {
     async listBreaks(): Promise<Map<string, any>> {
         try {
             let crons = this.registry.getCronJobs();
-            console.log(crons);
             return crons;
         } catch (error) {
             throw error;

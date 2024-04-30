@@ -45,6 +45,18 @@ export class QrsController {
     })
   }
 
+  @Get('/onlyFind/:id')
+  onlyGetQr(@Param('id') qrId: string) {
+    return new Promise<Qr>((resolve, reject) => {
+      this.qrsService.onlyFindQr(qrId)
+        .then((result) => {
+          resolve(result);
+        }).catch((err: Exception) => {
+          reject(err.getException());
+        });
+    })
+  }
+
   @Post("assign")
   assignHanger(@Body() qr: any) {
     return this.qrsService.assignHanger(qr)
