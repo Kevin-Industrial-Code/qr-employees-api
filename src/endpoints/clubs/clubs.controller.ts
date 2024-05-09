@@ -25,6 +25,16 @@ export class ClubsController {
     });
   }
 
+  @Get('byClub/:clubId')
+  async getClubsByClubId(@Param('clubId') clubId: string): Promise<Array<clubData>> {
+    try {
+      const clubs = await this.clubsService.listClubsByClubId(clubId);
+      return clubs;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   @Get(':id')
   async getClubData(@Param('id') clubId : string) {
     return new Promise<Club>((resolve, reject) => {

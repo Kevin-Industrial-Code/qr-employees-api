@@ -31,6 +31,20 @@ export class ClubsRepoService {
         }
     }
 
+    async listClubsByClubId(clubId: string) {
+        try {
+            let clubs = await this.model.find({ _id: new Types.ObjectId(clubId) });
+            let clubsData: Array<clubData> = [];
+            for (let club of clubs) {
+                let locations = await this.locationModel.find({ clubId: new Types.ObjectId(club.id), status: true })
+                clubsData.push({ club, locations })
+            }
+            return clubsData;
+        } catch (error) {
+            throw new ListEntityException(error);
+        }
+    }
+
     async findClub(clubId: string) {
         try {
             let club = await this.model.findById(clubId);

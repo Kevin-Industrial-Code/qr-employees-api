@@ -17,6 +17,15 @@ export class ClubsService {
         }
     }
 
+    async listClubsByClubId(clubId: string) {
+        try {
+            const clubs = await this.clubsRepo.listClubsByClubId(clubId)
+            return clubs;
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async getClub(clubId: string) {
         try {
             let club = await this.clubsRepo.findClub(clubId);
