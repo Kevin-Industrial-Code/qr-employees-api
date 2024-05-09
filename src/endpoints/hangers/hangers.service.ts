@@ -29,11 +29,13 @@ export class HangersService {
   }
 
   async assign(qrId: string, hangerId: string) {
+
     try {
 
       let qr: Qr = await this.qrsRepo.findOne(qrId) as Qr;
       let hanger: Hanger = await this.hangersRepo.findOne(hangerId);
       let club: Club = await this.clubRepo.findClub(qr.clubId);
+      
       if(hanger.status){
         throw new UnauthorizedException("Hanger already assigned");
       }

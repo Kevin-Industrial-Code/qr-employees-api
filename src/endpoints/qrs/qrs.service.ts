@@ -93,11 +93,16 @@ export class QrsService {
         try {
             let qrData = await this.qrRepo.findOne(qrId);
             let club = await this.clubsRepo.findClub(qrData.clubId);
-            if (!qrData.breaks)
-                return await this.takeBreakTime(qrId);
-            if(!qrData.hanger)
+            // if (!qrData.breaks)
+            //     return await this.takeBreakTime(qrId);
+
+            if(!qrData.hanger) {
                 throw new UnauthorizedException("No hanger to detach")
-            if (qrData.breaks && club.breakNumber == qrData.breaks.length){
+            }
+
+            const nBreaks = qrData.breaks?.length ? qrData.breaks?.length : 0;
+
+            if (club.breakNumber === nBreaks){
                 await this.hangersService.detach(qrData.hanger['_id'], qrId);
                 await this.qrRepo.detachHanger(qrId);
                 await this.qrRepo.update(qrId, {active: false, expired: true, slot: false})
@@ -160,6 +165,7 @@ export class QrsService {
     async listBreaks(): Promise<Map<string, any>> {
         try {
             let crons = this.registry.getCronJobs();
+            console.log(crons);
             return crons;
         } catch (error) {
             throw error;
