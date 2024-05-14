@@ -4,7 +4,7 @@ import mongoose, { HydratedDocument } from "mongoose";
 
 export type clubDocument = HydratedDocument<Club>
 
-@Schema({ collection: 'clubes' })
+@Schema({ collection: 'clubs' })
 export class Club {
     @Prop() name: string;
     @Prop() icon: string;

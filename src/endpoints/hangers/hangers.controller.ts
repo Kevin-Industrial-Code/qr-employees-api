@@ -54,4 +54,16 @@ export class HangersController {
     });
   }
 
+  @Patch(':id')
+  updateHanger(@Param('id') hangerId: string, @Body() hanger: any) {
+    return new Promise<any>((resolve, reject) => {
+      this.hangersService.updateHanger(hangerId, hanger)
+        .then((result) => {
+          resolve(result);
+        }).catch((err: Exception) => {
+          reject(err);
+        });
+    })
+  }
+
 }

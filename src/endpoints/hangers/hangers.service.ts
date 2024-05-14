@@ -85,4 +85,14 @@ export class HangersService {
     return this.hangersRepo.findOne(id);
   }
 
+  async updateHanger(hangerId: string, hanger: any) {
+    try {
+        let hangerData = await this.hangersRepo.update(hangerId, hanger);
+        return hangerData;
+    } catch (error) {
+        throw error;
+    }
+}
+
+
 }

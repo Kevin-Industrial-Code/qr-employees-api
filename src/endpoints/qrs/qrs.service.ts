@@ -68,9 +68,18 @@ export class QrsService {
     async assignHanger({qrId, hangerId}: {qrId : string, hangerId: string}) {
         try {
             let qr = await this.qrRepo.findOne(qrId);
+
+            //Cada que se asigna un hanger a un QR se cambia a used = true
+            if (!qr.used) {
+                qr.used = true;
+                await this.qrRepo.update(qrId, qr);
+            }
+
             if(qr.expired)
                 throw new UnauthorizedException("Qr expired");
+
             await this.hangersService.assign(qrId, hangerId);
+            
             if(qr.activeBreak){
                 await this.stopBreakTime(qrId)
                 .then((result) => {
