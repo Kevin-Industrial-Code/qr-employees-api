@@ -28,7 +28,6 @@ type Time = {
 @Injectable()
 export class QrsService {
     
-
     constructor(
         private qrRepo: QrRepoService,
         private clubsRepo: ClubsRepoService,
@@ -81,14 +80,14 @@ export class QrsService {
             await this.hangersService.assign(qrId, hangerId);
             
             if(qr.activeBreak){
-                await this.stopBreakTime(qrId)
-                .then((result) => {
-                    console.log(`breaktime stopped`);
-                    return 0;
-                }).catch((err) => {
-                    console.log(`breaktime could not be stopped`);
-                    return 0;
-                });
+                // await this.stopBreakTime(qrId)
+                // .then((result) => {
+                //     console.log(`breaktime stopped`);
+                //     return 0;
+                // }).catch((err) => {
+                //     console.log(`breaktime could not be stopped`);
+                //     return 0;
+                // });
             }
 
             let newqr = await this.qrRepo.findOne(qrId)
@@ -102,8 +101,6 @@ export class QrsService {
         try {
             let qrData = await this.qrRepo.findOne(qrId);
             let club = await this.clubsRepo.findClub(qrData.clubId);
-            // if (!qrData.breaks)
-            //     return await this.takeBreakTime(qrId);
 
             if(!qrData.hanger) {
                 throw new UnauthorizedException("No hanger to detach")
@@ -218,7 +215,9 @@ export class QrsService {
 
     async takeBreakTime(qrId: string) {
         try {
+
             let qr = await this.qrRepo.findOne(qrId);
+
             if (!qr)
                 throw new QRNotFoundException(new Error('Qr not found'));
             let club = await this.clubsRepo.findClub(qr.clubId);
@@ -233,23 +232,28 @@ export class QrsService {
                     throw new MaximumBreaktimesExceededException(new Error("the maximum number of breaktimes has been exceeded"));
             if (!qr.active)
                 throw new ExpiredQrException(new Error("the given qr is already expired"));
-            let hangerId = await qr.hanger["_id"] as Types.ObjectId;
+
+            const hangerId = await qr.hanger["_id"] as Types.ObjectId;
+
             await this.hangersService.softDetach(hangerId.toString(), qrId);
-            let breaks: Array<BreakTime> = qr.breaks ? qr.breaks : [];
+
+            const breaks: Array<BreakTime> = qr.breaks ? qr.breaks : [];
+
             breaks.push({
                 start: new Date(),
                 finish: null
             });
 
-            let activeBreak = true;
+            const  activeBreak = true;
+            
             await this.qrRepo.update(qrId, { activeBreak, breaks });
 
             // TODO: Re definir los cronjobs para los breaks
-            let time = this.timestampToCronJobString(Date.now() + club.breakTime * 60 * 1000);
-            let cronJob = new CronJob(time, () => {
-                this.qrRepo.update(qrId, {active: false, expired: true, activeBreak: false });
-            });
-            this.registry.addCronJob(qrId, cronJob as any)
+            // let time = this.timestampToCronJobString(Date.now() + club.breakTime * 60 * 1000);
+            // let cronJob = new CronJob(time, () => {
+            //     this.qrRepo.update(qrId, {active: false, expired: true, activeBreak: false });
+            // });
+            // this.registry.addCronJob(qrId, cronJob as any)
 
             return {
                 name: 'success',
@@ -270,31 +274,31 @@ export class QrsService {
         return { seconds, minutes, hours };
     }
 
-    async stopBreakTime(qrId: string) {
-        try {
-            let qr = await this.qrRepo.findOne(qrId);
-            let club = await this.clubsRepo.findClub(qr.clubId);
-            try {
-                this.registry.deleteCronJob(qrId);
-            } catch (error) {
-                throw new FetchEntityException(new Error("The cron job was not found"))
-            }
-            let finish = new Date();
-            let lastBreak = qr.breaks.pop();
-            lastBreak.finish = finish;
-            qr.breaks.push(lastBreak);
-            qr.activeBreak = false;
+    // async stopBreakTime(qrId: string) {
+    //     try {
+    //         let qr = await this.qrRepo.findOne(qrId);
+    //         let club = await this.clubsRepo.findClub(qr.clubId);
+    //         try {
+    //             this.registry.deleteCronJob(qrId);
+    //         } catch (error) {
+    //             throw new FetchEntityException(new Error("The cron job was not found"))
+    //         }
+    //         let finish = new Date();
+    //         let lastBreak = qr.breaks.pop();
+    //         lastBreak.finish = finish;
+    //         qr.breaks.push(lastBreak);
+    //         qr.activeBreak = false;
 
 
-            await this.qrRepo.update(qrId, qr);
-            return {
-                name: 'success',
-                message: 'Break Time stopped successfully'
-            };
-        } catch (error) {
-            throw error;
-        }
-    }
+    //         await this.qrRepo.update(qrId, qr);
+    //         return {
+    //             name: 'success',
+    //             message: 'Break Time stopped successfully'
+    //         };
+    //     } catch (error) {
+    //         throw error;
+    //     }
+    // }
 
     @Cron("0 0 * * * *")
     async cleanItems() {

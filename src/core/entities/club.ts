@@ -16,9 +16,13 @@ export class Club {
     @Prop() breakNumber: number;
     @Prop() withGateway: boolean;
     @Prop() withCash: boolean;
+    @Prop() withItem: boolean;
     @Prop({ default: false }) emailForgottenItems: boolean;
     @Prop() services: Array<Service>;
-    @Prop({ type: mongoose.Types.ObjectId }) adminId: string;
+    @Prop({ type: mongoose.Types.ObjectId }) 
+    adminId: string;
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Plan' })
+    plan: mongoose.Schema.Types.ObjectId;
 }
 
 export const clubSchema = SchemaFactory.createForClass(Club);

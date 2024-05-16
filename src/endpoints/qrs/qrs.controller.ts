@@ -123,17 +123,17 @@ export class QrsController {
     })
   }
 
-  @Patch("break/stop/:id")
-  stopBreak(@Param('id') qrId: string) {
-    return new Promise<Message>((resolve, reject) => {
-      this.qrsService.stopBreakTime(qrId)
-        .then((result: Message) => {
-          resolve(result);
-        }).catch((err: Exception) => {
-          reject(err.getException());
-        });
-    })
-  }
+  // @Patch("break/stop/:id")
+  // stopBreak(@Param('id') qrId: string) {
+  //   return new Promise<Message>((resolve, reject) => {
+  //     this.qrsService.stopBreakTime(qrId)
+  //       .then((result: Message) => {
+  //         resolve(result);
+  //       }).catch((err: Exception) => {
+  //         reject(err.getException());
+  //       });
+  //   })
+  // }
 
 
 }

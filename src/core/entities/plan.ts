@@ -1,31 +1,78 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument } from "mongoose";
+import { Document } from "mongoose";
 
-export type PlanDocument = HydratedDocument<Plan>;
+export type PlanDocument = Document<Plan>;
 
-@Schema()
+@Schema({ collection: 'plans' })
 export class Plan {
     @Prop()
-    planName : string;
+    planName: string;
+
     @Prop()
-    clubsLogo: boolean;
+    description: string;
+
     @Prop()
-    entryFunction: boolean;
+    numberCustomFields: number;
+
     @Prop()
-    multiLocationEntry: boolean;
+    numberLocations: number;
+
     @Prop()
-    coatFunction: boolean;
+    iconQrVisible: boolean;
+
     @Prop()
-    multiLocationCoatChecker: boolean;
+    functionEntry: boolean;
+
     @Prop()
-    bagOrItemChecker: boolean;
+    slotsActive: boolean;
+
     @Prop()
-    brakeTime : boolean;
+    guestInformation: boolean;
+
+    @Prop()
+    multiLocation: boolean;
+
+    @Prop()
+    brakeTime: boolean;
+
     @Prop()
     allowedBrakes: boolean;
+
     @Prop()
-    dashboard: boolean;
-    @Prop()
-    guestInfo: boolean;
+    gatewayPayment: boolean;
+
 }
 export const PlanSchema = SchemaFactory.createForClass(Plan);
+
+
+// import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+// import { HydratedDocument } from "mongoose";
+
+// export type PlanDocument = HydratedDocument<Plan>;
+
+// @Schema()
+// export class Plan {
+//     @Prop()
+//     planName : string;
+//     @Prop()
+//     clubsLogo: boolean;
+//     @Prop()
+//     entryFunction: boolean;
+//     @Prop()
+//     multiLocationEntry: boolean;
+//     @Prop()
+//     coatFunction: boolean;
+//     @Prop()
+//     multiLocationCoatChecker: boolean;
+//     @Prop()
+//     bagOrItemChecker: boolean;
+//     @Prop()
+//     brakeTime : boolean;
+//     @Prop()
+//     allowedBrakes: boolean;
+//     @Prop()
+//     dashboard: boolean;
+//     @Prop()
+//     guestInfo: boolean;
+// }
+// export const PlanSchema = SchemaFactory.createForClass(Plan);
